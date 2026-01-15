@@ -1,0 +1,14 @@
+@import 'tailwindcss' source(none);
+@import "./themes/bluewave-light.css";
+
+@source './**/*.tsx';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --font-body: var(--default-font-family);
+}
