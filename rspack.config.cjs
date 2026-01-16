@@ -2,10 +2,10 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: './src/bootstrap.tsx',
     mode: 'development',
     devServer: {
-        port: 3005,
+        port: 3010,
         historyApiFallback: true,
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -49,6 +49,8 @@ module.exports = {
     externalsType: 'module',
     externals: {
         react: 'react',
-        'react-dom': 'react-dom'
+        'react-dom': 'react-dom',
+        'react-dom/client': 'react-dom/client',
+        'react/jsx-runtime': 'react/jsx-runtime'
     }
 }
