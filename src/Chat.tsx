@@ -1,47 +1,67 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { Chat as ChatUI } from './components/ui/chat';
+import { type Message } from './components/ui/chat-message';
 
 export const Chat = () => {
-    const [messages, setMessages] = useState<{ id: number; text: string; sender: 'user' | 'bot' }[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
 
-    const handleSend = () => {
-        if (!input.trim()) return;
-        setMessages([...messages, { id: Date.now(), text: input, sender: 'user' }]);
-        setInput('');
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setInput(e.target.value);
+    };
+
+    const append = useCallback((message: { role: "user"; content: string }) => {
+        const newMessage: Message = {
+            id: Date.now().toString(),
+            role: "user",
+            content: message.content,
+            createdAt: new Date(),
+        };
+        setMessages((prev) => [...prev, newMessage]);
+
         // Simulate bot response
+        setIsGenerating(true);
         setTimeout(() => {
-            setMessages((prev) => [...prev, { id: Date.now() + 1, text: 'This is a demo response from the Chat microfrontend!', sender: 'bot' }]);
+            const botMessage: Message = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant",
+                content: "This is a demo response from the new Shadcn-styled Chat microfrontend!",
+                createdAt: new Date(),
+            };
+            setMessages((prev) => [...prev, botMessage]);
+            setIsGenerating(false);
         }, 1000);
+    }, []);
+
+    const handleSubmit = (e?: { preventDefault?: () => void }) => {
+        e?.preventDefault?.();
+        if (!input.trim()) return;
+
+        append({ role: "user", content: input });
+        setInput('');
     };
 
     return (
-        <div className="p-4 bg-background text-foreground border border-border rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4 text-primary">Chat Support</h2>
-            <div className="h-64 overflow-y-auto mb-4 border-b border-border pb-2">
-                {messages.map((m) => (
-                    <div key={m.id} className={`mb-2 ${m.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                        <span className={`inline-block p-2 rounded-lg ${m.sender === 'user' ? 'bg-primary text-white' : 'bg-secondary text-foreground'}`}>
-                            {m.text}
-                        </span>
-                    </div>
-                ))}
-                {messages.length === 0 && <p className="text-muted text-sm italic">Type a message to start...</p>}
+        <div className="flex h-[600px] w-full max-w-4xl flex-col rounded-xl border bg-background shadow-xl overflow-hidden">
+            <div className="p-4 border-b bg-muted/30">
+                <h2 className="text-lg font-semibold text-primary">Chat Support</h2>
+                <p className="text-xs text-muted-foreground">Powered by Shadcn Chatbot Kit</p>
             </div>
-            <div className="flex gap-2">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Type here..."
-                    className="flex-1 p-2 border border-border rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            <div className="flex-1 overflow-hidden p-4">
+                <ChatUI
+                    messages={messages}
+                    input={input}
+                    handleInputChange={handleInputChange}
+                    handleSubmit={handleSubmit}
+                    isGenerating={isGenerating}
+                    append={append}
+                    suggestions={[
+                        "What is this microfrontend?",
+                        "How to integrate this?",
+                        "Tell me about the tech stack"
+                    ]}
                 />
-                <button
-                    onClick={handleSend}
-                    className="bg-primary hover:opacity-90 text-white px-4 py-2 rounded font-bold transition-opacity"
-                >
-                    Send
-                </button>
             </div>
         </div>
     );

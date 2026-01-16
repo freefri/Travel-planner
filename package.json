@@ -7,7 +7,7 @@
         "dev": "concurrently --names \"client,tailwind\" \"rspack serve\" \"npm run build:tailwind -- --watch\"",
         "build": "npm run build:tailwind && npm run build:client",
         "build:client": "rspack build --mode production",
-        "build:tailwind": "npx @tailwindcss/cli -i ./src/styles/global.css -o ./dist/client/styles/tailwind.css",
+        "build:tailwind": "npx @tailwindcss/cli -i ./src/styles/global.css -o ./public/tailwind.css",
         "serve": "rspack serve",
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "setup": "npm install",
@@ -15,9 +15,14 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
+        "@radix-ui/react-slot": "^1.2.4",
+        "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "framer-motion": "^12.26.2",
+        "lucide-react": "^0.562.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
+        "remeda": "^2.33.4",
         "tailwind-merge": "^3.3.1"
     },
     "devDependencies": {

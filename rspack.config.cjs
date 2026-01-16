@@ -11,6 +11,12 @@ module.exports = {
             'Access-Control-Allow-Origin': '*',
         },
     },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'chat.js',
@@ -34,9 +40,6 @@ module.exports = {
                 use: ['style-loader', 'css-loader'],
             },
         ],
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js'],
     },
     plugins: [
         new HtmlWebpackPlugin({
