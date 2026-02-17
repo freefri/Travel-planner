@@ -12,8 +12,8 @@ interface TravelCardProps {
 export const TravelCard: React.FC<TravelCardProps> = ({ place, isSelected, onClick }) => {
     const dateStr = place.timestamp ? new Date(place.timestamp).toLocaleDateString() : 'No date';
 
-    // Use a deterministic "random" image from picsum for aesthetics
-    const bgImage = `https://picsum.photos/seed/${encodeURIComponent(place.name)}/400/200`;
+    // Use custom image or deterministic "random" image from picsum
+    const bgImage = place.imageUrl || `https://picsum.photos/seed/${encodeURIComponent(place.name)}/400/200`;
 
     return (
         <div

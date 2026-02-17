@@ -27,6 +27,7 @@ export interface Place {
     description?: string;
     timestamp?: string; // ISO string from <when>
     styleUrl?: string;
+    imageUrl?: string;
     coordinates: Coordinates;
     extendedData?: ExtendedData;
 }

@@ -12,6 +12,8 @@ export const Travel = () => {
     const [places, setPlaces] = useState<Place[]>([]);
     const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [dateFilter, setDateFilter] = useState('');
+    const [typeFilter, setTypeFilter] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState<Partial<Place>>({});
@@ -34,12 +36,26 @@ export const Travel = () => {
     }, []);
 
     // --- Derived Data ---
+    const availableTypes = useMemo(() => {
+        const types = new Set<string>();
+        places.forEach(p => {
+            p.extendedData?.featureTypes?.forEach(t => types.add(t));
+        });
+        return Array.from(types).sort();
+    }, [places]);
+
     const filteredPlaces = useMemo(() => {
-        return places.filter(p =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.extendedData?.featureTypes?.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-    }, [places, searchQuery]);
+        return places.filter(p => {
+            const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.extendedData?.featureTypes?.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+
+            const matchesDate = !dateFilter || (p.timestamp && p.timestamp.startsWith(dateFilter));
+
+            const matchesType = !typeFilter || p.extendedData?.featureTypes?.includes(typeFilter);
+
+            return matchesSearch && matchesDate && matchesType;
+        });
+    }, [places, searchQuery, dateFilter, typeFilter]);
 
     const selectedPlace = useMemo(() => {
         return places.find(p => p.id === selectedPlaceId);
@@ -149,6 +165,11 @@ export const Travel = () => {
             <TravelHeader
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
+                dateFilter={dateFilter}
+                onDateFilterChange={setDateFilter}
+                typeFilter={typeFilter}
+                onTypeFilterChange={setTypeFilter}
+                availableTypes={availableTypes}
                 onImport={handleFileImport}
                 onExport={handleExport}
                 isImporting={isImporting}

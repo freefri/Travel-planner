@@ -19,6 +19,10 @@ const ICON_OPTIONS = [
     'Airport', 'FastFood', 'Food', 'Hotel', 'Information', 'Shop', 'Sights', 'Swim', 'Theatre', 'Transport', 'Viewpoint'
 ];
 
+const FEATURE_TYPE_OPTIONS = [
+    'tourism-attraction', 'landmark', 'restaurant', 'hotel', 'shop', 'transit-station', 'nature-reserve'
+];
+
 export const PlaceModal: React.FC<PlaceModalProps> = ({
     place,
     isEditing,
@@ -59,6 +63,20 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
         });
     };
 
+    const handleFeatureTypeChange = (value: string) => {
+        onFormChange({
+            extendedData: {
+                ...place.extendedData,
+                ...editForm.extendedData,
+                featureTypes: value ? [value] : []
+            }
+        });
+    };
+
+    const handleImageUrlChange = (value: string) => {
+        onFormChange({ imageUrl: value });
+    };
+
     // Helper to format ISO to YYYY-MM-DDTHH:mm for datetime-local input
     const formatDateTimeForInput = (iso?: string) => {
         if (!iso) return '';
@@ -69,12 +87,16 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
 
     const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${place.coordinates.lat},${place.coordinates.lng}`;
 
+    const currentImg = editForm.imageUrl ?? place.imageUrl ?? `https://picsum.photos/seed/${encodeURIComponent(place.name)}/800/400`;
+
+    const currentFeatureType = editForm.extendedData?.featureTypes?.[0] ?? place.extendedData?.featureTypes?.[0] ?? '';
+
     return (
         <div className="mf-place-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border animate-in zoom-in-95 duration-300">
                 <div className="relative h-64">
                     <img
-                        src={`https://picsum.photos/seed/${encodeURIComponent(place.name)}/800/400`}
+                        src={currentImg}
                         alt={place.name}
                         className="w-full h-full object-cover bg-gray-600"
                     />
@@ -87,12 +109,20 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                     </button>
                     <div className="absolute bottom-6 left-6 text-white w-full pr-12">
                         {isEditing ? (
-                            <input
-                                className="bg-black/40 border border-white/20 text-3xl font-bold w-full rounded px-2 outline-none focus:border-primary transition-all"
-                                value={editForm.name ?? place.name}
-                                onChange={e => onFormChange({ name: e.target.value })}
-                                placeholder="Place name"
-                            />
+                            <div className="space-y-2">
+                                <input
+                                    className="bg-black/40 border border-white/20 text-3xl font-bold w-full rounded px-2 outline-none focus:border-primary transition-all"
+                                    value={editForm.name ?? place.name}
+                                    onChange={e => onFormChange({ name: e.target.value })}
+                                    placeholder="Place name"
+                                />
+                                <input
+                                    className="bg-black/40 border border-white/20 text-xs w-full rounded px-2 py-1 outline-none focus:border-primary transition-all text-white/70"
+                                    value={editForm.imageUrl ?? place.imageUrl ?? ''}
+                                    onChange={e => handleImageUrlChange(e.target.value)}
+                                    placeholder="Custom image URL..."
+                                />
+                            </div>
                         ) : (
                             <>
                                 <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
@@ -104,7 +134,7 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 bg-white">
+                <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 bg-white overflow-y-auto max-h-[calc(100vh-20rem)]">
                     <div className="md:col-span-2 space-y-6">
                         <div>
                             <h5 className="text-sm font-semibold mb-2 flex items-center gap-2">
@@ -222,6 +252,39 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-3 text-sm">
                                     <Type className="w-4 h-4 text-primary shrink-0" />
+                                    <span className="font-semibold">Feature Type</span>
+                                </div>
+                                {isEditing ? (
+                                    <div className="ml-7 space-y-2 max-w-[calc(100%-28px)]">
+                                        <select
+                                            className="w-full bg-white border rounded p-1 text-xs"
+                                            value={FEATURE_TYPE_OPTIONS.includes(currentFeatureType) ? currentFeatureType : (currentFeatureType ? 'custom' : '')}
+                                            onChange={e => handleFeatureTypeChange(e.target.value === 'custom' ? currentFeatureType : e.target.value)}
+                                        >
+                                            <option value="">None</option>
+                                            {FEATURE_TYPE_OPTIONS.map(opt => (
+                                                <option key={opt} value={opt}>{opt}</option>
+                                            ))}
+                                            <option value="custom">Custom...</option>
+                                        </select>
+                                        {(!FEATURE_TYPE_OPTIONS.includes(currentFeatureType) && currentFeatureType !== '') && (
+                                            <input
+                                                type="text"
+                                                className="w-full bg-white border rounded p-1 text-xs"
+                                                placeholder="Custom feature type..."
+                                                value={currentFeatureType}
+                                                onChange={e => handleFeatureTypeChange(e.target.value)}
+                                            />
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-muted-foreground ml-7">{currentFeatureType || 'None'}</p>
+                                )}
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-3 text-sm">
+                                    <Type className="w-4 h-4 text-primary shrink-0" />
                                     <span className="font-semibold">Icon Type</span>
                                 </div>
                                 {isEditing ? (
@@ -229,7 +292,7 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                                         <select
                                             className="w-full bg-white border rounded p-1 text-xs"
                                             value={ICON_OPTIONS.includes(editForm.extendedData?.icon ?? place.extendedData?.icon ?? '') ? (editForm.extendedData?.icon ?? place.extendedData?.icon ?? '') : 'custom'}
-                                            onChange={e => handleIconChange(e.target.value === 'custom' ? '' : e.target.value)}
+                                            onChange={e => handleIconChange(e.target.value === 'custom' ? (editForm.extendedData?.icon ?? place.extendedData?.icon ?? '') : e.target.value)}
                                         >
                                             <option value="">None</option>
                                             {ICON_OPTIONS.map(opt => (
@@ -237,7 +300,7 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                                             ))}
                                             <option value="custom">Custom...</option>
                                         </select>
-                                        {(!ICON_OPTIONS.includes(editForm.extendedData?.icon ?? place.extendedData?.icon ?? '') || (editForm.extendedData?.icon === '')) && (
+                                        {(!ICON_OPTIONS.includes(editForm.extendedData?.icon ?? place.extendedData?.icon ?? '') && (editForm.extendedData?.icon ?? place.extendedData?.icon ?? '') !== '') && (
                                             <input
                                                 type="text"
                                                 className="w-full bg-white border rounded p-1 text-xs"
