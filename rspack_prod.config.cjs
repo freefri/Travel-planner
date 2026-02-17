@@ -37,20 +37,20 @@ module.exports = {
         ],
     },
     plugins: [
-      new ModuleFederationPlugin({
-        name: 'mf_tutor',
-        filename: 'remoteEntry.js',
-        remotes: {},
-        exposes: {
-          './Renderer': './src/Renderer',
-        },
-        shared: {
-          typescript: {
-            singleton: true,
-            requiredVersion: deps.typescript
-          }
-        }
-      }),
+        new ModuleFederationPlugin({
+            name: 'mf_travel',
+            filename: 'remoteEntry.js',
+            remotes: {},
+            exposes: {
+                './Renderer': './src/Renderer',
+            },
+            shared: {
+                typescript: {
+                    singleton: true,
+                    requiredVersion: deps.typescript
+                }
+            }
+        }),
         new HtmlWebpackPlugin({
             template: './public/index.html',
         }),

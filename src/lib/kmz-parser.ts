@@ -125,3 +125,89 @@ function parseExtendedData(el: Element | null): ExtendedData | undefined {
 
     return data;
 }
+export async function exportKMZ(data: KMZData): Promise<Blob> {
+    const kml = generateKML(data);
+    const zip = new JSZip();
+    zip.file('doc.kml', kml);
+    return await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.google-earth.kmz' });
+}
+
+function generateKML(data: KMZData): string {
+    const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    const kmlOpen = '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:mwm="https://omaps.app">\n<Document>\n';
+    const kmlClose = '</Document>\n</kml>';
+
+    let content = `  <name>${escapeXML(data.name)}</name>\n`;
+
+    if (data.lastModified) {
+        content += `  <ExtendedData>\n    <mwm:lastModified>${data.lastModified}</mwm:lastModified>\n  </ExtendedData>\n`;
+    }
+
+    data.places.forEach(place => {
+        content += '  <Placemark>\n';
+        content += `    <name>${escapeXML(place.name)}</name>\n`;
+        if (place.description) {
+            content += `    <description>${escapeXML(place.description)}</description>\n`;
+        }
+        if (place.timestamp) {
+            content += `    <TimeStamp><when>${place.timestamp}</when></TimeStamp>\n`;
+        }
+        if (place.styleUrl) {
+            content += `    <styleUrl>${escapeXML(place.styleUrl)}</styleUrl>\n`;
+        }
+
+        content += `    <Point><coordinates>${place.coordinates.lng},${place.coordinates.lat}${place.coordinates.alt !== undefined ? ',' + place.coordinates.alt : ''}</coordinates></Point>\n`;
+
+        if (place.extendedData) {
+            content += '    <ExtendedData>\n';
+            const ed = place.extendedData;
+
+            const writeLangs = (tagName: string, langs?: MWMLang[]) => {
+                if (!langs) return '';
+                let res = `      <mwm:${tagName}>\n`;
+                langs.forEach(l => {
+                    res += `        <mwm:lang code="${l.code}">${escapeXML(l.value)}</mwm:lang>\n`;
+                });
+                res += `      </mwm:${tagName}>\n`;
+                return res;
+            };
+
+            content += writeLangs('name', ed.name);
+            content += writeLangs('description', ed.description);
+            content += writeLangs('customName', ed.customName);
+
+            if (ed.featureTypes && ed.featureTypes.length > 0) {
+                content += '      <mwm:featureTypes>\n';
+                ed.featureTypes.forEach(t => {
+                    content += `        <mwm:value>${escapeXML(t)}</mwm:value>\n`;
+                });
+                content += '      </mwm:featureTypes>\n';
+            }
+
+            if (ed.scale) content += `      <mwm:scale>${ed.scale}</mwm:scale>\n`;
+            if (ed.icon) content += `      <mwm:icon>${escapeXML(ed.icon)}</mwm:icon>\n`;
+            if (ed.visibility !== undefined) content += `      <mwm:visibility>${ed.visibility ? '1' : '0'}</mwm:visibility>\n`;
+            if (ed.accessRules) content += `      <mwm:accessRules>${escapeXML(ed.accessRules)}</mwm:accessRules>\n`;
+            if (ed.annotation) content += `      <mwm:annotation>${escapeXML(ed.annotation)}</mwm:annotation>\n`;
+
+            content += '    </ExtendedData>\n';
+        }
+
+        content += '  </Placemark>\n';
+    });
+
+    return xmlHeader + kmlOpen + content + kmlClose;
+}
+
+function escapeXML(str: string): string {
+    return str.replace(/[<>&"']/g, (c) => {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '"': return '&quot;';
+            case "'": return '&apos;';
+            default: return c;
+        }
+    });
+}

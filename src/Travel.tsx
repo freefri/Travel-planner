@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Place } from './types/travel';
-import { parseKMZ } from './lib/kmz-parser';
+import { Place, KMZData } from './types/travel';
+import { parseKMZ, exportKMZ } from './lib/kmz-parser';
 import { TravelCard } from './components/TravelCard';
-import { Import, Search, X, MapPin, Calendar, Type, Globe, Info } from 'lucide-react';
+import { Import, Search, X, MapPin, Calendar, Type, Globe, Info, Download, Edit2, Save, Trash2 } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { cn } from './lib/utils';
 
@@ -11,6 +11,8 @@ export const Travel = () => {
     const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isImporting, setIsImporting] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState<Partial<Place>>({});
 
     // 1. Initial sample place
     useEffect(() => {
@@ -51,6 +53,41 @@ export const Travel = () => {
         }
     };
 
+    const handleExport = async () => {
+        const data: KMZData = {
+            name: 'Exported Travel Plan',
+            places: places,
+            lastModified: new Date().toISOString()
+        };
+        const blob = await exportKMZ(data);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'travel-plan.kmz';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const startEditing = (place: Place) => {
+        setEditForm({ ...place });
+        setIsEditing(true);
+    };
+
+    const saveEdit = () => {
+        if (!editForm.id) return;
+        setPlaces(prev => prev.map(p => p.id === editForm.id ? { ...p, ...editForm } as Place : p));
+        setIsEditing(false);
+    };
+
+    const deletePlace = (id: string) => {
+        if (confirm('Are you sure you want to delete this place?')) {
+            setPlaces(prev => prev.filter(p => p.id !== id));
+            setSelectedPlaceId(null);
+        }
+    };
+
     const filteredPlaces = places.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.extendedData?.featureTypes?.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -84,22 +121,33 @@ export const Travel = () => {
                         />
                     </div>
 
-                    <label className="relative cursor-pointer">
-                        <input
-                            type="file"
-                            accept=".kmz,.kml"
-                            className="hidden"
-                            onChange={handleFileImport}
-                            disabled={isImporting}
-                        />
-                        <div className={cn(
-                            "flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold hover:opacity-90 transition-all shadow-md active:scale-95",
-                            isImporting && "animate-pulse grayscale cursor-wait"
-                        )}>
-                            <Import className="w-4 h-4" />
-                            <span>{isImporting ? 'Parsing...' : 'Import KMZ'}</span>
-                        </div>
-                    </label>
+                    <div className="flex items-center gap-2">
+                        <label className="relative cursor-pointer">
+                            <input
+                                type="file"
+                                accept=".kmz,.kml"
+                                className="hidden"
+                                onChange={handleFileImport}
+                                disabled={isImporting}
+                            />
+                            <div className={cn(
+                                "flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold hover:opacity-90 transition-all shadow-sm active:scale-95",
+                                isImporting && "animate-pulse grayscale cursor-wait"
+                            )}>
+                                <Import className="w-4 h-4" />
+                                <span>{isImporting ? 'Parsing...' : 'Import'}</span>
+                            </div>
+                        </label>
+
+                        <Button
+                            onClick={handleExport}
+                            disabled={places.length === 0}
+                            className="rounded-full bg-primary text-primary-foreground px-4 py-2 flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+                        >
+                            <Download className="w-4 h-4" />
+                            <span>Export KMZ</span>
+                        </Button>
+                    </div>
                 </div>
             </header>
 
@@ -120,7 +168,10 @@ export const Travel = () => {
                                 key={place.id}
                                 place={place}
                                 isSelected={selectedPlaceId === place.id}
-                                onClick={() => setSelectedPlaceId(place.id)}
+                                onClick={() => {
+                                    setSelectedPlaceId(place.id);
+                                    setIsEditing(false);
+                                }}
                             />
                         ))}
                     </div>
@@ -138,7 +189,7 @@ export const Travel = () => {
                 </div>
             </footer>
 
-            {/* Detail View (Right Sidebar-like or Modal) */}
+            {/* Detail View / Edit Modal */}
             {selectedPlace && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border animate-in zoom-in-95 duration-300">
@@ -150,16 +201,29 @@ export const Travel = () => {
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                             <button
-                                onClick={() => setSelectedPlaceId(null)}
+                                onClick={() => {
+                                    setSelectedPlaceId(null);
+                                    setIsEditing(false);
+                                }}
                                 className="absolute top-4 right-4 p-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
-                            <div className="absolute bottom-6 left-6 text-white">
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
-                                    {selectedPlace.extendedData?.featureTypes?.[0] || 'Destination'}
-                                </h4>
-                                <h2 className="text-3xl font-bold">{selectedPlace.name}</h2>
+                            <div className="absolute bottom-6 left-6 text-white w-full pr-12">
+                                {isEditing ? (
+                                    <input
+                                        className="bg-black/40 border border-white/20 text-3xl font-bold w-full rounded px-2 outline-none focus:border-primary transition-all"
+                                        value={editForm.name || ''}
+                                        onChange={e => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                                    />
+                                ) : (
+                                    <>
+                                        <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
+                                            {selectedPlace.extendedData?.featureTypes?.[0] || 'Destination'}
+                                        </h4>
+                                        <h2 className="text-3xl font-bold">{selectedPlace.name}</h2>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -170,16 +234,49 @@ export const Travel = () => {
                                         <Info className="w-4 h-4 text-primary" />
                                         Description
                                     </h5>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        {selectedPlace.description || 'No description available for this location.'}
-                                    </p>
+                                    {isEditing ? (
+                                        <textarea
+                                            className="w-full h-32 bg-muted/50 border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                            value={editForm.description || ''}
+                                            onChange={e => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                                        />
+                                    ) : (
+                                        <p className="text-muted-foreground leading-relaxed">
+                                            {selectedPlace.description || 'No description available for this location.'}
+                                        </p>
+                                    )}
                                 </div>
 
-                                {selectedPlace.extendedData?.annotation && (
+                                {!isEditing && selectedPlace.extendedData?.annotation && (
                                     <div className="bg-muted/50 p-4 rounded-xl border-l-4 border-primary">
                                         <p className="text-sm italic">{selectedPlace.extendedData.annotation}</p>
                                     </div>
                                 )}
+
+                                <div className="flex gap-2 pt-4">
+                                    {isEditing ? (
+                                        <>
+                                            <Button onClick={saveEdit} className="gap-2 rounded-xl">
+                                                <Save className="w-4 h-4" />
+                                                Save Changes
+                                            </Button>
+                                            <Button variant="outline" onClick={() => setIsEditing(false)} className="rounded-xl">
+                                                Cancel
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button onClick={() => startEditing(selectedPlace)} className="gap-2 rounded-xl">
+                                                <Edit2 className="w-4 h-4" />
+                                                Edit Place
+                                            </Button>
+                                            <Button variant="destructive" onClick={() => deletePlace(selectedPlace.id)} className="gap-2 rounded-xl">
+                                                <Trash2 className="w-4 h-4" />
+                                                Delete
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="space-y-4">
@@ -211,12 +308,15 @@ export const Travel = () => {
                                     </div>
                                 </div>
 
-                                <Button
-                                    onClick={() => setSelectedPlaceId(null)}
-                                    className="w-full rounded-xl"
-                                >
-                                    Close Details
-                                </Button>
+                                {!isEditing && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setSelectedPlaceId(null)}
+                                        className="w-full rounded-xl"
+                                    >
+                                        Close Details
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
