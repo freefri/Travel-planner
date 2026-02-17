@@ -6,6 +6,11 @@ dist/
 dist-ssr/
 /public/tailwind.css
 
+# Test files
+/playwright-report/
+/test-results/
+/task/
+
 # IDEs
 .idea/
 .vscode/

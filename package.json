@@ -12,6 +12,7 @@
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "setup": "npm install",
         "clean": "rimraf dist dist-ssr node_modules",
+        "test:e2e": "npx playwright test",
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
@@ -32,6 +33,7 @@
         "@babel/preset-react": "^7.27.1",
         "@babel/preset-typescript": "^7.27.1",
         "@module-federation/enhanced": "0.14.0",
+        "@playwright/test": "^1.58.2",
         "@rspack/cli": "1.1.1",
         "@rspack/core": "1.1.1",
         "@rspack/dev-server": "1.0.9",
