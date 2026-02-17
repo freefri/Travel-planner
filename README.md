@@ -53,6 +53,43 @@ You can also serve the production build locally:
 npm run serve
 ```
 
+### 5. Running Tests
+
+To run the tests in headless mode:
+
+```bash
+npm run test:e2e
+```
+
+To run tests in UI mode (interactive):
+
+```bash
+npx playwright test --ui
+```
+
+To update visual snapshots:
+
+```bash
+npx playwright test --update-snapshots
+```
+
+The test suite covers:
+
+- Page title and header validation.
+- Initial sample data rendering.
+- Detailed place view functionality.
+- Search and filtering logic.
+- **Visual Regression**: Uses `toHaveScreenshot()` to ensure UI consistency.
+
+#### Git Configuration for Tests
+
+It is correct to ignore the following directories in `.gitignore`:
+
+- `/playwright-report/`: Contains the generated HTML reports after a run.
+- `/test-results/`: Contains traces, logs, and failure screenshots from specific runs.
+
+**Important**: The `*.png` files generated for snapshot testing (found in `tests/*.spec.ts-snapshots/`) **should be committed** to Git. These serve as the "ground truth" or baseline for future tests. If you change the design intentionally, you must run the update command above to generate new baseline images.
+
 ## Available Scripts
 
 | Command | Description |
@@ -64,6 +101,8 @@ npm run serve
 | `npm run build:tailwind` | Compiles Tailwind CSS. |
 | `npm run serve` | Serves the production build locally. |
 | `npm run type-check` | Runs TypeScript type checking. |
+| `npm run test:e2e` | Runs Playwright end-to-end tests. |
+| `npm run test:e2e:report` | Serves the last Playwright HTML report. |
 | `npm run lint` | Runs ESLint for code quality. |
 | `npm run clean` | Removes build artifacts and `node_modules`. |
 

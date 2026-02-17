@@ -13,6 +13,9 @@ test.describe('Travel Planner E2E Tests', () => {
         // Use the first h1 which is the dev-only title in index.html
         const header = page.locator('h1').first();
         await expect(header).toHaveText('Travel Planner Development (ESM)');
+
+        // Visual Snapshot
+        await expect(page).toHaveScreenshot('dashboard.png');
     });
 
     test('should load the initial sample place and show details', async ({ page }) => {
@@ -29,6 +32,9 @@ test.describe('Travel Planner E2E Tests', () => {
 
         const description = page.locator('text=Un templo icónico en un islote rocoso');
         await expect(description).toBeVisible();
+
+        // Visual Snapshot of the Modal
+        await expect(page).toHaveScreenshot('detail-modal.png');
 
         // Close modal using the X button or Close Details button
         // The X button in Travel.tsx is a button containing an X icon (lucide-react X)

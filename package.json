@@ -13,6 +13,7 @@
         "setup": "npm install",
         "clean": "rimraf dist dist-ssr node_modules",
         "test:e2e": "npx playwright test",
+        "test:e2e:report": "npx playwright show-report --host 0.0.0.0",
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
