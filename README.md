@@ -70,7 +70,7 @@ npx playwright test --ui
 To update visual snapshots:
 
 ```bash
-npx playwright test --update-snapshots
+npm run test:e2e:update
 ```
 
 The test suite covers:

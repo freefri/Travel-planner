@@ -13,18 +13,18 @@ export const TravelCard: React.FC<TravelCardProps> = ({ place, isSelected, onCli
     const dateStr = place.timestamp ? new Date(place.timestamp).toLocaleDateString() : 'No date';
 
     // Use a deterministic "random" image from picsum for aesthetics
-    const bgImage = `https://picsum.photos/seed/${place.name}/400/200`;
+    const bgImage = `https://picsum.photos/seed/${encodeURIComponent(place.name)}/400/200`;
 
     return (
         <div
             onClick={onClick}
             className={cn(
-                "relative group cursor-pointer overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1",
+                "mf-travel-card relative group cursor-pointer overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-2xl",
                 isSelected ? "ring-2 ring-primary border-primary shadow-lg" : "border-border"
             )}
         >
             <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110 bg-gray-600"
                 style={{ backgroundImage: `url(${bgImage})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
