@@ -1,2 +1,2 @@
-export { Chat } from './Chat';
+export { Travel } from './Travel';
 import './styles/global.css';

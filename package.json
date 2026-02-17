@@ -1,5 +1,5 @@
 {
-    "name": "mf_chat",
+    "name": "mf_travel",
     "version": "1.0.0",
     "private": true,
     "type": "module",
@@ -19,6 +19,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "framer-motion": "^12.26.2",
+        "jszip": "^3.10.1",
         "lucide-react": "^0.562.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
@@ -35,6 +36,7 @@
         "@rspack/core": "1.1.1",
         "@rspack/dev-server": "1.0.9",
         "@tailwindcss/cli": "^4.1.7",
+        "@types/jszip": "^3.4.1",
         "@types/react": "18.3.3",
         "@types/react-dom": "18.3.0",
         "babel-loader": "9.1.3",
