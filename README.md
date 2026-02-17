@@ -8,7 +8,7 @@ This is a standalone, client-only microfrontend for the Chat/Tutor feature. It i
 - **Tailwind CSS 4**: Utility-first CSS framework.
 - **Rspack**: High-performance Rust-based bundler.
 - **Module Federation**: Webpack Module Federation for dynamic component sharing.
-- **TypeScript**: Static typing for Javascript.
+- **TypeScript**: Static typing for Javascript (Never use `any` as type).
 - **Shadcn Chatbot Kit**: UI components for chat interface.
 
 ## Getting Started
@@ -88,6 +88,7 @@ The microfrontend uses **Webpack Module Federation** via `@module-federation/enh
 React and React DOM are externalized as `window` globals and should be provided by the host application.
 
 **Host Integration Example:**
+
 ```javascript
 // In your host application's Module Federation config
 remotes: {
