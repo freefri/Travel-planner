@@ -19,6 +19,7 @@ Follow these steps to set up and run the project locally.
 
 - **Node.js**: We recommend using the version specified in `.nvmrc` (v22.16.0).
 - **nvm**: If you have [nvm](https://github.com/nvm-sh/nvm) installed, just run:
+
   ```bash
   nvm use
   ```
@@ -26,6 +27,7 @@ Follow these steps to set up and run the project locally.
 ### 2. Installation
 
 Install all dependencies using the setup script:
+
 ```bash
 npm run setup
 ```
@@ -33,20 +35,25 @@ npm run setup
 ### 3. Development
 
 Run the development server with Hot Module Replacement (HMR):
+
 ```bash
 npm run dev
 ```
+
 The application will be available at `http://localhost:3010`.
 
 ### 4. Build & Production
 
 To create a production-ready bundle with Module Federation:
+
 ```bash
 npm run build
 ```
+
 The output will be in the `dist/` directory.
 
 You can also serve the production build locally:
+
 ```bash
 npm run serve
 ```
@@ -65,6 +72,8 @@ npm run serve
 | `npm run lint` | Runs ESLint for code quality. |
 | `npm run clean` | Removes build artifacts and `node_modules`. |
 
+*Always keep this list updated*
+
 ## Integration Architecture
 
 This microfrontend supports two integration modes:
@@ -74,14 +83,17 @@ This microfrontend supports two integration modes:
 The microfrontend uses **Webpack Module Federation** via `@module-federation/enhanced` to expose components dynamically.
 
 **Configuration:**
+
 - **Module Name**: `mf_tutor`
 - **Remote Entry**: `dist/remoteEntry.js`
 - **Port**: `3010`
 
 **Exposed Components:**
-- `./Renderer` → Exports the `Chat` component
+
+- `./Renderer` → Exports the main component
 
 **Shared Dependencies:**
+
 - `typescript` (singleton)
 
 **External Dependencies:**
@@ -121,6 +133,8 @@ The design follows the **Shadcn Chatbot Kit** design system with Tailwind CSS 4.
 - **Component Library**: Shadcn-based components in `src/components/ui/`
 - **Styling**: Use Tailwind utility classes for consistency
 - **Theme**: Supports light/dark mode via CSS variables
+- **`public/tailwind.css`** is auto-generated — never edit it directly; edit `src/styles/global.css` instead
+- **Path alias**: `@` resolves to `src/`
 
 ## Project Structure
 
