@@ -48,6 +48,19 @@ export const getColorFromStyle = (styleUrl?: string): string | undefined => {
     return STYLE_COLOR_MAP[styleId];
 };
 
+export const getSafeSeed = (name: string, fallback: string = 'random'): string => {
+    try {
+        return encodeURIComponent(name);
+    } catch (e) {
+        return fallback;
+    }
+};
+
+export const getPlaceholderImage = (name: string, id?: string, width: number = 400, height: number = 200): string => {
+    const seed = getSafeSeed(name, id || 'random');
+    return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+};
+
 export const getEmojiForIcon = (icon?: string): string => {
     if (!icon) return '';
     return EMOJI_MAP[icon] || '';

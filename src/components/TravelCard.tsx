@@ -2,7 +2,7 @@ import React from 'react';
 import { Place } from '../types/travel';
 import { MapPin, Calendar, Info } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { getColorFromStyle } from '../lib/place-utils';
+import { getColorFromStyle, getPlaceholderImage } from '../lib/place-utils';
 
 interface TravelCardProps {
     place: Place;
@@ -15,15 +15,7 @@ export const TravelCard: React.FC<TravelCardProps> = ({ place, isSelected, onCli
     const styleColor = getColorFromStyle(place.styleUrl);
 
     // Use custom image or deterministic "random" image from picsum
-    const safeSeed = (() => {
-        try {
-            return encodeURIComponent(place.name);
-        } catch (e) {
-            // Fallback for malformed URI sequences
-            return place.id || 'random';
-        }
-    })();
-    const bgImage = place.imageUrl || `https://picsum.photos/seed/${safeSeed}/400/200`;
+    const bgImage = place.imageUrl || getPlaceholderImage(place.name, place.id, 400, 200);
 
     return (
         <div

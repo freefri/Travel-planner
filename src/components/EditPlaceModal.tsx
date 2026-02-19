@@ -2,7 +2,12 @@ import React from 'react';
 import { Place } from '../types/travel';
 import { X, Info, MapPin, Calendar, Type, Save, Edit2, Trash2, Globe } from 'lucide-react';
 import { Button } from './ui/button';
-import { formatPlaceName, getPureTitle, ICON_OPTIONS } from '../lib/place-utils';
+import {
+  formatPlaceName,
+  getPureTitle,
+  ICON_OPTIONS,
+  getPlaceholderImage
+} from '../lib/place-utils';
 import { DateTimeSelector } from './DateTimeSelector';
 import { PlacemarkStyleSelector } from './PlacemarkStyleSelector';
 
@@ -109,7 +114,7 @@ export const EditPlaceModal: React.FC<EditPlaceModalProps> = ({
 
   const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${place.coordinates.lat},${place.coordinates.lng}`;
 
-  const currentImg = editForm.imageUrl ?? place.imageUrl ?? `https://picsum.photos/seed/${encodeURIComponent(place.name)}/800/400`;
+  const currentImg = editForm.imageUrl ?? place.imageUrl ?? getPlaceholderImage(place.name, place.id, 800, 400);
 
   const currentFeatureType = editForm.extendedData?.featureTypes?.[0] ?? place.extendedData?.featureTypes?.[0] ?? '';
 
