@@ -9,10 +9,10 @@ test.describe('Travel Planner E2E Tests', () => {
         // 1. Page title is 'Travel Planner'
         await expect(page).toHaveTitle(/Travel Planner/);
 
-        // 2. Header (h1) says 'Travel Planner Development (ESM)'
+        // 2. Header (h1) says 'Travel Planner Development'
         // Use the first h1 which is the dev-only title in index.html
         const header = page.locator('h1').first();
-        await expect(header).toHaveText('Travel Planner Development (ESM)');
+        await expect(header).toHaveText('Travel Planner Development');
 
         // Visual Snapshot
         await expect(page).toHaveScreenshot('dashboard.png');
@@ -27,7 +27,7 @@ test.describe('Travel Planner E2E Tests', () => {
         await card.click();
 
         // Check modal content
-        const modal = page.locator('.fixed.inset-0'); // Modal overlay
+        const modal = page.locator('.mf-place-modal'); // Modal overlay
         await expect(modal).toBeVisible();
 
         const description = page.locator('text=Un templo icónico en un islote rocoso');
@@ -39,14 +39,16 @@ test.describe('Travel Planner E2E Tests', () => {
         // Close modal using the X button or Close Details button
         // The X button in Travel.tsx is a button containing an X icon (lucide-react X)
         // We can target the button with the close icon or the text "Close Details"
-        const closeButton = page.locator('button:has(svg.lucide-x), button:has-text("Close Details")').first();
+        const closeButton = page.locator('.mf-modal-close-button').first();
+        await expect(closeButton).toBeVisible();
         await closeButton.click();
         await expect(modal).not.toBeVisible();
     });
 
     test('should filter places by search query', async ({ page }) => {
         const searchInput = page.getByPlaceholder('Search places...');
-        await searchInput.fill('Bali'); // Pura Tanah Lot is in Bali (implicitly)
+        await searchInput.fill('Tanah');
+        await expect(page.locator('text=Pura Tanah Lot')).toBeVisible();
 
         // Since we only have one sample place, searching for something else should clear it
         await searchInput.fill('Non Existent');

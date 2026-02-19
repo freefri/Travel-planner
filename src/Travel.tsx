@@ -24,7 +24,7 @@ export const Travel = () => {
             id: 'sample-1',
             name: 'Pura Tanah Lot',
             description: 'Un templo icónico en un islote rocoso, famoso por sus vistas al atardecer.',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date(Date.UTC(2026, 1, 19, 8, 20, 30)).toISOString(),
             coordinates: { lat: -8.6212, lng: 115.0868 },
             extendedData: {
                 featureTypes: ['tourism-attraction'],

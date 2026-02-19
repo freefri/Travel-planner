@@ -5,8 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "concurrently --names \"client,tailwind\" \"rspack serve\" \"npm run build:tailwind -- --watch\"",
-        "build": "npm run build:tailwind && npm run build:client",
+        "build": "npm run build:tailwind && npm run build:standalone",
         "build:client": "rspack build --mode production --config rspack_prod.config.cjs",
+        "build:standalone": "rspack build --config rspack.config.cjs && cp public/tailwind.css dist/",
         "build:tailwind": "npx @tailwindcss/cli -i ./src/styles/global.css -o ./public/tailwind.css",
         "serve": "rspack serve --config rspack_prod.config.cjs",
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",

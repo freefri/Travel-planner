@@ -103,7 +103,7 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors"
+                        className="mf-modal-close-button absolute top-4 right-4 p-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>

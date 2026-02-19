@@ -143,6 +143,32 @@ For development or standalone usage, the microfrontend can also be built as a na
 
 **Note:** All React-related libraries (react, react-dom, etc.) are externalized to ensure they are shared from the host environment.
 
+## Deployment
+
+This project is built as a static application and can be hosted on any web server (AWS S3, Nginx, Vercel, etc.).
+
+### 1. Build the standalone bundle
+
+The default build script creates a self-contained bundle in the `dist/` directory that is ready for static hosting.
+
+```bash
+npm run build
+```
+
+### 2. Upload to Static Hosting
+
+Copy the contents of the `dist/` directory to your hosting provider. The essential files are:
+
+- `index.html`: The entry point.
+- `travel.js`: The application logic (bundled with React).
+- `tailwind.css`: The compiled styles.
+
+#### **AWS S3 Deployment Tip:**
+
+- Enable **Static Website Hosting** on your bucket.
+- Ensure the `dist/` files are uploaded with the correct Content-Types (`text/html`, `application/javascript`, `text/css`).
+- Set appropriate **CORS** headers if this module will be loaded by a host application from a different domain.
+
 ## UI Design Guidelines
 
 The design with Tailwind CSS 4.

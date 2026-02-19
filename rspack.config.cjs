@@ -20,14 +20,9 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'travel.js',
-        library: {
-            type: 'module',
-        },
-        publicPath: 'auto',
+        publicPath: '/',
     },
-    experiments: {
-        outputModule: true,
-    },
+    experiments: {},
     module: {
         rules: [
             {
@@ -44,16 +39,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html',
+            inject: true,
         }),
     ],
-    // Treat react as peer/external if we want to share it from the host
-    // but for the external team's dev kit, we might want to bundle it.
-    // We can let them decide or provide a specific peer config.
-    externalsType: 'module',
-    externals: {
-        react: 'react',
-        'react-dom': 'react-dom',
-        'react-dom/client': 'react-dom/client',
-        'react/jsx-runtime': 'react/jsx-runtime'
-    }
+    // For a standalone prototype, we bundle React.
+    externals: {}
 }

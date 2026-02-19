@@ -38,7 +38,7 @@ module.exports = {
     },
     plugins: [
         new ModuleFederationPlugin({
-            name: 'mf_travel',
+            name: 'mf_tutor',
             filename: 'remoteEntry.js',
             remotes: {},
             exposes: {
