@@ -2,8 +2,9 @@ import React from 'react';
 import { Place } from '../types/travel';
 import { X, Info, MapPin, Calendar, Type, Save, Edit2, Trash2, Globe } from 'lucide-react';
 import { Button } from './ui/button';
-import { formatPlaceName, getPureTitle } from '../lib/place-utils';
+import { formatPlaceName, getPureTitle, ICON_OPTIONS } from '../lib/place-utils';
 import { DateTimeSelector } from './DateTimeSelector';
+import { PlacemarkStyleSelector } from './PlacemarkStyleSelector';
 
 interface EditPlaceModalProps {
   place: Place;
@@ -17,10 +18,6 @@ interface EditPlaceModalProps {
   onDelete: () => void;
   onFormChange: (data: Partial<Place>) => void;
 }
-
-const ICON_OPTIONS = [
-  'Airport', 'FastFood', 'Food', 'Hotel', 'Information', 'Shop', 'Sights', 'Swim', 'Theatre', 'Transport', 'Viewpoint'
-];
 
 const FEATURE_TYPE_OPTIONS = [
   'tourism-attraction', 'landmark', 'restaurant', 'hotel', 'shop', 'transit-station', 'nature-reserve'
@@ -271,6 +268,12 @@ export const EditPlaceModal: React.FC<EditPlaceModalProps> = ({
                   </p>
                 )}
               </div>
+
+              <PlacemarkStyleSelector
+                styleUrl={editForm.styleUrl ?? place.styleUrl}
+                isEditing={isEditing}
+                onChange={val => onFormChange({ styleUrl: val })}
+              />
 
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-3 text-sm">

@@ -14,7 +14,7 @@ export const Travel = () => {
     const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [dateFilter, setDateFilter] = useState('');
-    const [typeFilter, setTypeFilter] = useState('');
+    const [iconFilter, setIconFilter] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState<Partial<Place>>({});
@@ -37,12 +37,12 @@ export const Travel = () => {
     }, []);
 
     // --- Derived Data ---
-    const availableTypes = useMemo(() => {
-        const types = new Set<string>();
+    const availableIcons = useMemo(() => {
+        const icons = new Set<string>();
         places.forEach(p => {
-            p.extendedData?.featureTypes?.forEach(t => types.add(t));
+            if (p.extendedData?.icon) icons.add(p.extendedData.icon);
         });
-        return Array.from(types).sort();
+        return Array.from(icons).sort();
     }, [places]);
 
     const tripStartDate = useMemo(() => {
@@ -61,11 +61,11 @@ export const Travel = () => {
 
             const matchesDate = !dateFilter || (p.timestamp && p.timestamp.startsWith(dateFilter));
 
-            const matchesType = !typeFilter || p.extendedData?.featureTypes?.includes(typeFilter);
+            const matchesIcon = !iconFilter || p.extendedData?.icon === iconFilter;
 
-            return matchesSearch && matchesDate && matchesType;
+            return matchesSearch && matchesDate && matchesIcon;
         });
-    }, [places, searchQuery, dateFilter, typeFilter]);
+    }, [places, searchQuery, dateFilter, iconFilter]);
 
     const selectedPlace = useMemo(() => {
         return places.find(p => p.id === selectedPlaceId);
@@ -194,9 +194,9 @@ export const Travel = () => {
                 onSearchChange={setSearchQuery}
                 dateFilter={dateFilter}
                 onDateFilterChange={setDateFilter}
-                typeFilter={typeFilter}
-                onTypeFilterChange={setTypeFilter}
-                availableTypes={availableTypes}
+                iconFilter={iconFilter}
+                onIconFilterChange={setIconFilter}
+                availableIcons={availableIcons}
                 onImport={handleFileImport}
                 onExport={handleExport}
                 isImporting={isImporting}

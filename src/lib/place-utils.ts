@@ -19,6 +19,35 @@ export const EMOJI_MAP: Record<string, string> = {
     'City': '🏙️',
 };
 
+export const ICON_OPTIONS = Object.keys(EMOJI_MAP);
+
+export const STYLE_COLOR_MAP: Record<string, string> = {
+    'placemark-red': '#f44336',
+    'placemark-blue': '#2196f3',
+    'placemark-purple': '#9c27b0',
+    'placemark-yellow': '#ffeb3b',
+    'placemark-pink': '#e91e63',
+    'placemark-brown': '#795548',
+    'placemark-green': '#4caf50',
+    'placemark-orange': '#ff9800',
+    'placemark-deeppurple': '#673ab7',
+    'placemark-lightblue': '#03a9f4',
+    'placemark-cyan': '#00bcd4',
+    'placemark-teal': '#009688',
+    'placemark-lime': '#cddc39',
+    'placemark-deeporange': '#ff5722',
+    'placemark-gray': '#9e9e9e',
+    'placemark-bluegray': '#607d8b',
+};
+
+export const STYLE_OPTIONS = Object.keys(STYLE_COLOR_MAP);
+
+export const getColorFromStyle = (styleUrl?: string): string | undefined => {
+    if (!styleUrl) return undefined;
+    const styleId = styleUrl.replace(/^#/, '');
+    return STYLE_COLOR_MAP[styleId];
+};
+
 export const getEmojiForIcon = (icon?: string): string => {
     if (!icon) return '';
     return EMOJI_MAP[icon] || '';

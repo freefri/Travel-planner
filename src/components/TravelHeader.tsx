@@ -9,9 +9,9 @@ interface TravelHeaderProps {
     onSearchChange: (query: string) => void;
     dateFilter: string;
     onDateFilterChange: (date: string) => void;
-    typeFilter: string;
-    onTypeFilterChange: (type: string) => void;
-    availableTypes: string[];
+    iconFilter: string;
+    onIconFilterChange: (icon: string) => void;
+    availableIcons: string[];
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onExport: () => void;
     isImporting: boolean;
@@ -23,9 +23,9 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
     onSearchChange,
     dateFilter,
     onDateFilterChange,
-    typeFilter,
-    onTypeFilterChange,
-    availableTypes,
+    iconFilter,
+    onIconFilterChange,
+    availableIcons,
     onImport,
     onExport,
     isImporting,
@@ -65,14 +65,14 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
                     />
 
                     <select
-                        value={typeFilter}
-                        onChange={(e) => onTypeFilterChange(e.target.value)}
+                        value={iconFilter}
+                        onChange={(e) => onIconFilterChange(e.target.value)}
                         className="px-3 py-2 bg-muted/50 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all min-w-[120px]"
                     >
-                        <option value="">All Types</option>
-                        {availableTypes.map(type => (
-                            <option key={type} value={type}>
-                                {EMOJI_MAP[type] ? `${EMOJI_MAP[type]} ${type}` : type}
+                        <option value="">All types</option>
+                        {availableIcons.map(icon => (
+                            <option key={icon} value={icon}>
+                                {EMOJI_MAP[icon] ? `${EMOJI_MAP[icon]} ${icon}` : icon}
                             </option>
                         ))}
                     </select>
