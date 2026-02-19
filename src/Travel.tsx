@@ -1,13 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Place, KMZData } from './types/travel';
 import { parseKMZ, exportKMZ } from './lib/kmz-parser';
-import { syncPlaceName } from './lib/place-utils';
-import { TravelCard } from './components/TravelCard';
+import { syncPlaceName, fetchDuckDuckGoData } from './lib/place-utils';
 import { TravelGrid } from './components/TravelGrid';
 import { TravelHeader } from './components/TravelHeader';
 import { EditPlaceModal } from './components/EditPlaceModal';
 import { StatsFooter } from './components/StatsFooter';
-import { MapPin } from 'lucide-react';
 
 export const Travel = () => {
     // --- State ---
@@ -19,6 +17,7 @@ export const Travel = () => {
     const [isImporting, setIsImporting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState<Partial<Place>>({});
+    const [searchedIds, setSearchedIds] = useState<Set<string>>(new Set());
 
     // --- Effects ---
     useEffect(() => {
@@ -36,6 +35,38 @@ export const Travel = () => {
         };
         setPlaces([syncPlaceName(samplePlace)]);
     }, []);
+
+    // --- Enrichment Effect ---
+    useEffect(() => {
+        const enrichMissingData = async () => {
+            const placesToSearch = places.filter(p =>
+                !searchedIds.has(p.id) && (!p.description || !p.ddgImage)
+            );
+
+            if (placesToSearch.length === 0) return;
+
+            // Mark them as searched immediately to avoid repeated calls
+            setSearchedIds(prev => {
+                const next = new Set(prev);
+                placesToSearch.forEach(p => next.add(p.id));
+                return next;
+            });
+
+            // Fetch sequentially to avoid overwhelming the API
+            for (const place of placesToSearch) {
+                const data = await fetchDuckDuckGoData(place.name);
+                if (data) {
+                    setPlaces(prev => prev.map(p => p.id === place.id ? {
+                        ...p,
+                        description: p.description || data.abstract || p.description,
+                        ddgImage: data.image || p.ddgImage
+                    } : p));
+                }
+            }
+        };
+
+        enrichMissingData();
+    }, [places, searchedIds]);
 
     // --- Derived Data ---
     const availableIcons = useMemo(() => {

@@ -56,9 +56,29 @@ export const getSafeSeed = (name: string, fallback: string = 'random'): string =
     }
 };
 
-export const getPlaceholderImage = (name: string, id?: string, width: number = 400, height: number = 200): string => {
+export const getPlaceholderImage = (name: string, id?: string, ddgImage?: string, width: number = 400, height: number = 200): string => {
+    if (ddgImage) return ddgImage;
     const seed = getSafeSeed(name, id || 'random');
     return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+};
+
+export const fetchDuckDuckGoData = async (name: string): Promise<{ abstract?: string, image?: string } | null> => {
+    try {
+        // We use the pure title for better search results
+        const query = getPureTitle(name);
+        const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+        const response = await fetch(url);
+        if (!response.ok) return null;
+        const data = await response.json();
+
+        return {
+            abstract: data.AbstractText || data.Abstract || undefined,
+            image: data.Image && `https://duckduckgo.com${data.Image}`
+        };
+    } catch (error) {
+        console.error('DuckDuckGo fetch error:', error);
+        return null;
+    }
 };
 
 export const getEmojiForIcon = (icon?: string): string => {
