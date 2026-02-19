@@ -3,6 +3,7 @@ import { Place, KMZData } from './types/travel';
 import { parseKMZ, exportKMZ } from './lib/kmz-parser';
 import { syncPlaceName } from './lib/place-utils';
 import { TravelCard } from './components/TravelCard';
+import { TravelGrid } from './components/TravelGrid';
 import { TravelHeader } from './components/TravelHeader';
 import { EditPlaceModal } from './components/EditPlaceModal';
 import { StatsFooter } from './components/StatsFooter';
@@ -158,35 +159,6 @@ export const Travel = () => {
     const handleFormChange = (updates: Partial<Place>) => {
         setEditForm(prev => ({ ...prev, ...updates }));
     };
-
-    // --- Render Helpers ---
-    const renderContent = () => {
-        if (filteredPlaces.length === 0) {
-            return (
-                <div className="flex flex-col items-center justify-center h-full text-center py-20">
-                    <div className="bg-muted p-6 rounded-full mb-4">
-                        <MapPin className="w-12 h-12 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-lg font-semibold">No places found</h3>
-                    <p className="text-muted-foreground">Try importing a KMZ file or adjusting your search.</p>
-                </div>
-            );
-        }
-
-        return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredPlaces.map(place => (
-                    <TravelCard
-                        key={place.id}
-                        place={place}
-                        isSelected={selectedPlaceId === place.id}
-                        onClick={() => handlePlaceSelect(place.id)}
-                    />
-                ))}
-            </div>
-        );
-    };
-
     return (
         <div className="mf-travel flex h-screen w-full flex-col bg-background text-foreground overflow-hidden">
             <TravelHeader
@@ -204,7 +176,12 @@ export const Travel = () => {
             />
 
             <main className="flex-1 overflow-y-auto p-6 bg-muted/20">
-                {renderContent()}
+                <TravelGrid
+                    places={filteredPlaces}
+                    selectedPlaceId={selectedPlaceId}
+                    onPlaceSelect={handlePlaceSelect}
+                    tripStartDate={tripStartDate}
+                />
             </main>
 
             <StatsFooter
