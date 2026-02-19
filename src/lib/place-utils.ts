@@ -30,8 +30,8 @@ export const getEmojiForIcon = (icon?: string): string => {
 export const getPureTitle = (name: string): string => {
     // Regex matches "Day." or "Day" followed by " HH:MM" and optional emoji
     // Format: "1. 08:20 🏟️ Place Name" or "1 08:20 Place Name"
-    // Using 'u' flag to handle surrogate pairs (emojis) correctly
-    return name.replace(/^\d+\.?\s+\d{2}:\d{2}\s+([^\s\w]\s*)?/u, '').trim();
+    // Using [^\s\w]+ to catch emojis with variation selectors and the 'u' flag for Unicode support
+    return name.replace(/^\d+\.?\s+\d{2}:\d{2}\s+(?:[^\s\w]+\s+)?/u, '').trim();
 };
 
 /**

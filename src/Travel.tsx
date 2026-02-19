@@ -4,7 +4,7 @@ import { parseKMZ, exportKMZ } from './lib/kmz-parser';
 import { syncPlaceName } from './lib/place-utils';
 import { TravelCard } from './components/TravelCard';
 import { TravelHeader } from './components/TravelHeader';
-import { PlaceModal } from './components/PlaceModal';
+import { EditPlaceModal } from './components/EditPlaceModal';
 import { StatsFooter } from './components/StatsFooter';
 import { MapPin } from 'lucide-react';
 
@@ -214,7 +214,7 @@ export const Travel = () => {
             />
 
             {selectedPlace && (
-                <PlaceModal
+                <EditPlaceModal
                     place={selectedPlace}
                     isEditing={isEditing}
                     editForm={editForm}
