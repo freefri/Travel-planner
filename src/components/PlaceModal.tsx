@@ -2,11 +2,13 @@ import React from 'react';
 import { Place } from '../types/travel';
 import { X, Info, MapPin, Calendar, Type, Save, Edit2, Trash2, Globe } from 'lucide-react';
 import { Button } from './ui/button';
+import { formatPlaceName, getPureTitle } from '../lib/place-utils';
 
 interface PlaceModalProps {
     place: Place;
     isEditing: boolean;
     editForm: Partial<Place>;
+    tripStartDate?: string;
     onClose: () => void;
     onStartEdit: () => void;
     onCancelEdit: () => void;
@@ -32,7 +34,8 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
     onCancelEdit,
     onSaveEdit,
     onDelete,
-    onFormChange
+    onFormChange,
+    tripStartDate
 }) => {
     const handleCoordChange = (key: 'lat' | 'lng', value: string) => {
         const numValue = parseFloat(value);
@@ -47,14 +50,33 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
         }
     };
 
+    const handleNameChange = (value: string) => {
+        const currentTimestamp = editForm.timestamp ?? place.timestamp;
+        const currentIcon = editForm.extendedData?.icon ?? place.extendedData?.icon;
+        onFormChange({
+            name: formatPlaceName(value, currentTimestamp, currentIcon, tripStartDate)
+        });
+    };
+
     const handleDateTimeChange = (value: string) => {
         if (value) {
-            onFormChange({ timestamp: new Date(value).toISOString() });
+            const newTimestamp = new Date(value).toISOString();
+            const currentName = editForm.name ?? place.name;
+            const currentIcon = editForm.extendedData?.icon ?? place.extendedData?.icon;
+
+            onFormChange({
+                timestamp: newTimestamp,
+                name: formatPlaceName(currentName, newTimestamp, currentIcon, tripStartDate)
+            });
         }
     };
 
     const handleIconChange = (value: string) => {
+        const currentName = editForm.name ?? place.name;
+        const currentTimestamp = editForm.timestamp ?? place.timestamp;
+
         onFormChange({
+            name: formatPlaceName(currentName, currentTimestamp, value, tripStartDate),
             extendedData: {
                 ...place.extendedData,
                 ...editForm.extendedData,
@@ -112,8 +134,8 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                             <div className="space-y-2">
                                 <input
                                     className="bg-black/40 border border-white/20 text-3xl font-bold w-full rounded px-2 outline-none focus:border-primary transition-all"
-                                    value={editForm.name ?? place.name}
-                                    onChange={e => onFormChange({ name: e.target.value })}
+                                    value={getPureTitle(editForm.name ?? place.name)}
+                                    onChange={e => handleNameChange(e.target.value)}
                                     placeholder="Place name"
                                 />
                                 <input
@@ -185,6 +207,20 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                                 </>
                             )}
                         </div>
+
+                        {isEditing && (
+                          <div className="bg-primary/5 border border-primary/20 p-4 rounded-xl">
+                              <h6 className="text-xs font-bold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                                  <Info className="w-3 h-3" />
+                                  Auto-Formatting Information
+                              </h6>
+                              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                  The full title is automatically generated using the format: <strong>"Day. Time Emoji Title"</strong>.
+                                  Update the <strong>Date & Time</strong> to change the schedule, and
+                                  <strong> Icon Type</strong> to change the emoji.
+                              </p>
+                          </div>
+                        )}
                     </div>
 
                     <div className="space-y-4">

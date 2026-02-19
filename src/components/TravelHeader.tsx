@@ -2,6 +2,7 @@ import React from 'react';
 import { Globe, Search, Import, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '../lib/utils';
+import { EMOJI_MAP } from '../lib/place-utils';
 
 interface TravelHeaderProps {
     searchQuery: string;
@@ -70,7 +71,9 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
                     >
                         <option value="">All Types</option>
                         {availableTypes.map(type => (
-                            <option key={type} value={type}>{type}</option>
+                            <option key={type} value={type}>
+                                {EMOJI_MAP[type] ? `${EMOJI_MAP[type]} ${type}` : type}
+                            </option>
                         ))}
                     </select>
                 </div>

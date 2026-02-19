@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Place, KMZData } from './types/travel';
 import { parseKMZ, exportKMZ } from './lib/kmz-parser';
+import { syncPlaceName } from './lib/place-utils';
 import { TravelCard } from './components/TravelCard';
 import { TravelHeader } from './components/TravelHeader';
 import { PlaceModal } from './components/PlaceModal';
@@ -32,7 +33,7 @@ export const Travel = () => {
                 visibility: true
             }
         };
-        setPlaces([samplePlace]);
+        setPlaces([syncPlaceName(samplePlace)]);
     }, []);
 
     // --- Derived Data ---
@@ -42,6 +43,15 @@ export const Travel = () => {
             p.extendedData?.featureTypes?.forEach(t => types.add(t));
         });
         return Array.from(types).sort();
+    }, [places]);
+
+    const tripStartDate = useMemo(() => {
+        if (places.length === 0) return undefined;
+        const dates = places
+            .map(p => p.timestamp ? new Date(p.timestamp).getTime() : Infinity)
+            .filter(t => t !== Infinity);
+        if (dates.length === 0) return undefined;
+        return new Date(Math.min(...dates)).toISOString();
     }, [places]);
 
     const filteredPlaces = useMemo(() => {
@@ -70,9 +80,16 @@ export const Travel = () => {
         try {
             const data = await parseKMZ(file);
             setPlaces(prev => {
-                const existingNames = new Set(prev.map(p => p.name));
-                const newPlaces = data.places.filter(p => !existingNames.has(p.name));
-                return [...prev, ...newPlaces];
+                const combined = [...prev, ...data.places];
+                // Sync all names based on the final trip start date
+                const earliest = combined.reduce((acc, p) => {
+                    if (!p.timestamp) return acc;
+                    const t = new Date(p.timestamp).getTime();
+                    return t < acc ? t : acc;
+                }, Infinity);
+                const tripStart = earliest === Infinity ? undefined : new Date(earliest).toISOString();
+
+                return combined.map(p => syncPlaceName(p, tripStart));
             });
         } catch (error) {
             console.error('Failed to parse KMZ:', error);
@@ -117,7 +134,17 @@ export const Travel = () => {
 
     const saveEdit = useCallback(() => {
         if (!editForm.id) return;
-        setPlaces(prev => prev.map(p => p.id === editForm.id ? { ...p, ...editForm } as Place : p));
+        setPlaces(prev => {
+            const updated = prev.map(p => p.id === editForm.id ? { ...p, ...editForm } as Place : p);
+            // Re-sync all names in case trip start changed or name format needs updating
+            const earliest = updated.reduce((acc, p) => {
+                if (!p.timestamp) return acc;
+                const t = new Date(p.timestamp).getTime();
+                return t < acc ? t : acc;
+            }, Infinity);
+            const tripStart = earliest === Infinity ? undefined : new Date(earliest).toISOString();
+            return updated.map(p => syncPlaceName(p, tripStart));
+        });
         setIsEditing(false);
     }, [editForm]);
 
@@ -191,6 +218,7 @@ export const Travel = () => {
                     place={selectedPlace}
                     isEditing={isEditing}
                     editForm={editForm}
+                    tripStartDate={tripStartDate}
                     onClose={handleCloseModal}
                     onStartEdit={() => startEditing(selectedPlace)}
                     onCancelEdit={() => setIsEditing(false)}

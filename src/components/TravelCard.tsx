@@ -13,7 +13,15 @@ export const TravelCard: React.FC<TravelCardProps> = ({ place, isSelected, onCli
     const dateStr = place.timestamp ? new Date(place.timestamp).toLocaleDateString() : 'No date';
 
     // Use custom image or deterministic "random" image from picsum
-    const bgImage = place.imageUrl || `https://picsum.photos/seed/${encodeURIComponent(place.name)}/400/200`;
+    const safeSeed = (() => {
+        try {
+            return encodeURIComponent(place.name);
+        } catch (e) {
+            // Fallback for malformed URI sequences
+            return place.id || 'random';
+        }
+    })();
+    const bgImage = place.imageUrl || `https://picsum.photos/seed/${safeSeed}/400/200`;
 
     return (
         <div
