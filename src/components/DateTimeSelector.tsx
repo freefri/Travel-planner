@@ -22,7 +22,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({ timestamp, o
     };
 
     return (
-        <div className="flex flex-col gap-2 ml-7 max-w-[calc(100%-28px)]">
+        <div className="mf-date-time-selector flex flex-col gap-2 ml-7 max-w-[calc(100%-28px)]">
             <input
                 type="date"
                 className="w-full bg-white border rounded p-1 text-xs"

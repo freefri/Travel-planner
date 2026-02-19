@@ -17,7 +17,7 @@ export const PlacemarkStyleSelector: React.FC<PlacemarkStyleSelectorProps> = ({
 
     if (!isEditing) {
         return (
-            <div className="flex flex-col gap-1">
+            <div className="mf-placemark-style-selector flex flex-col gap-1">
                 <div className="flex items-center gap-3 text-sm">
                     <div
                         className="w-4 h-4 rounded-full border border-gray-300"
@@ -33,7 +33,7 @@ export const PlacemarkStyleSelector: React.FC<PlacemarkStyleSelectorProps> = ({
     }
 
     return (
-        <div className="flex flex-col gap-1">
+        <div className="mf-placemark-style-selector flex flex-col gap-1">
             <div className="flex items-center gap-3 text-sm">
                 <Palette className="w-4 h-4 text-primary shrink-0" />
                 <span className="font-semibold">Placemark Style</span>

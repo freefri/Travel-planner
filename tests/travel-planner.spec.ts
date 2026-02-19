@@ -27,7 +27,7 @@ test.describe('Travel Planner E2E Tests', () => {
         await card.click();
 
         // Check modal content
-        const modal = page.locator('.mf-place-modal'); // Modal overlay
+        const modal = page.locator('.mf-edit-place-modal'); // Modal overlay
         await expect(modal).toBeVisible();
 
         const description = page.locator('text=Un templo icónico en un islote rocoso');
