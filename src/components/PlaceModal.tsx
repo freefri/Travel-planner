@@ -3,6 +3,7 @@ import { Place } from '../types/travel';
 import { X, Info, MapPin, Calendar, Type, Save, Edit2, Trash2, Globe } from 'lucide-react';
 import { Button } from './ui/button';
 import { formatPlaceName, getPureTitle } from '../lib/place-utils';
+import { DateTimeSelector } from './DateTimeSelector';
 
 interface PlaceModalProps {
     place: Place;
@@ -58,17 +59,27 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
         });
     };
 
-    const handleDateTimeChange = (value: string) => {
-        if (value) {
-            const newTimestamp = new Date(value).toISOString();
-            const currentName = editForm.name ?? place.name;
-            const currentIcon = editForm.extendedData?.icon ?? place.extendedData?.icon;
+    const handleDateTimePartChange = (datePart?: string, timePart?: string) => {
+        const currentIso = editForm.timestamp ?? place.timestamp;
+        const date = currentIso ? new Date(currentIso) : new Date();
 
-            onFormChange({
-                timestamp: newTimestamp,
-                name: formatPlaceName(currentName, newTimestamp, currentIcon, tripStartDate)
-            });
+        if (datePart) {
+            const [y, m, d] = datePart.split('-').map(Number);
+            date.setFullYear(y, m - 1, d);
         }
+        if (timePart) {
+            const [h, min] = timePart.split(':').map(Number);
+            date.setHours(h, min);
+        }
+
+        const newTimestamp = date.toISOString();
+        const currentName = editForm.name ?? place.name;
+        const currentIcon = editForm.extendedData?.icon ?? place.extendedData?.icon;
+
+        onFormChange({
+            timestamp: newTimestamp,
+            name: formatPlaceName(currentName, newTimestamp, currentIcon, tripStartDate)
+        });
     };
 
     const handleIconChange = (value: string) => {
@@ -97,14 +108,6 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
 
     const handleImageUrlChange = (value: string) => {
         onFormChange({ imageUrl: value });
-    };
-
-    // Helper to format ISO to YYYY-MM-DDTHH:mm for datetime-local input
-    const formatDateTimeForInput = (iso?: string) => {
-        if (!iso) return '';
-        const date = new Date(iso);
-        const pad = (num: number) => num.toString().padStart(2, '0');
-        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     };
 
     const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${place.coordinates.lat},${place.coordinates.lng}`;
@@ -209,17 +212,17 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                         </div>
 
                         {isEditing && (
-                          <div className="bg-primary/5 border border-primary/20 p-4 rounded-xl">
-                              <h6 className="text-xs font-bold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                                  <Info className="w-3 h-3" />
-                                  Auto-Formatting Information
-                              </h6>
-                              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                                  The full title is automatically generated using the format: <strong>"Day. Time Emoji Title"</strong>.
-                                  Update the <strong>Date & Time</strong> to change the schedule, and
-                                  <strong> Icon Type</strong> to change the emoji.
-                              </p>
-                          </div>
+                            <div className="bg-primary/5 border border-primary/20 p-4 rounded-xl">
+                                <h6 className="text-xs font-bold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                                    <Info className="w-3 h-3" />
+                                    Auto-Formatting Information
+                                </h6>
+                                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                    The full title is automatically generated using the format: <strong>"Day. Time Emoji Title"</strong>.
+                                    Update the <strong>Date & Time</strong> to change the schedule, and
+                                    <strong> Icon Type</strong> to change the emoji.
+                                </p>
+                            </div>
                         )}
                     </div>
 
@@ -272,11 +275,9 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({
                                     <span className="font-semibold">Date & Time</span>
                                 </div>
                                 {isEditing ? (
-                                    <input
-                                        type="datetime-local"
-                                        className="w-full bg-white border rounded p-1 text-xs ml-7 max-w-[calc(100%-28px)]"
-                                        value={formatDateTimeForInput(editForm.timestamp ?? place.timestamp)}
-                                        onChange={e => handleDateTimeChange(e.target.value)}
+                                    <DateTimeSelector
+                                        timestamp={editForm.timestamp ?? place.timestamp}
+                                        onChange={handleDateTimePartChange}
                                     />
                                 ) : (
                                     <p className="text-xs text-muted-foreground ml-7">
