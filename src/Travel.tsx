@@ -202,7 +202,7 @@ export const Travel = () => {
     setEditForm(prev => ({ ...prev, ...updates }));
   };
   return (
-    <div className="mf-travel flex h-screen w-full flex-col bg-background text-foreground overflow-hidden">
+    <div className="mf-travel flex min-h-screen w-full flex-col bg-background text-foreground">
       <TravelHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -218,7 +218,7 @@ export const Travel = () => {
         hasPlaces={places.length > 0}
       />
 
-      <main className="flex-1 overflow-y-auto p-6 bg-muted/20">
+      <main className="flex-1 p-6 bg-muted/20">
         <TravelGrid
           places={filteredPlaces}
           selectedPlaceId={selectedPlaceId}
