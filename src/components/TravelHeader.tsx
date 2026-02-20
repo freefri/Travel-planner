@@ -9,6 +9,7 @@ interface TravelHeaderProps {
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onExport: () => void;
     onRemoveAll: () => void;
+    onCreateNew: () => void;
     isImporting: boolean;
     hasPlaces: boolean;
     dateFilter: string;
@@ -24,6 +25,7 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
     onImport,
     onExport,
     onRemoveAll,
+    onCreateNew,
     isImporting,
     hasPlaces,
     dateFilter,
@@ -71,6 +73,7 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
                         onImport={onImport}
                         onExport={onExport}
                         onRemoveAll={onRemoveAll}
+                        onCreateNew={onCreateNew}
                         isImporting={isImporting}
                         hasPlaces={hasPlaces}
                     />

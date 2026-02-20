@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Import, Download, Trash2, X } from 'lucide-react';
+import { Menu, Import, Download, Trash2, X, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '../lib/utils';
 
@@ -7,6 +7,7 @@ interface TravelActionsProps {
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onExport: () => void;
     onRemoveAll: () => void;
+    onCreateNew: () => void;
     isImporting: boolean;
     hasPlaces: boolean;
 }
@@ -15,6 +16,7 @@ export const TravelActions: React.FC<TravelActionsProps> = ({
     onImport,
     onExport,
     onRemoveAll,
+    onCreateNew,
     isImporting,
     hasPlaces,
 }) => {
@@ -51,6 +53,16 @@ export const TravelActions: React.FC<TravelActionsProps> = ({
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-card border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-2 space-y-1 bg-white">
+                        <button
+                            onClick={() => handleAction(onCreateNew)}
+                            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted rounded-lg transition-colors"
+                        >
+                            <MapPin className="w-4 h-4 text-primary" />
+                            <span>Create New Place</span>
+                        </button>
+
+                        <div className="h-px bg-border my-1" />
+
                         <label className="flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted rounded-lg cursor-pointer transition-colors">
                             <input
                                 type="file"
