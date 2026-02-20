@@ -1,39 +1,39 @@
 import React from 'react';
 import { Globe, Search } from 'lucide-react';
 import { TravelActions } from './TravelActions';
-import { EMOJI_MAP } from '../lib/place-utils';
+import { MoreFilters } from './MoreFilters';
 
 interface TravelHeaderProps {
     searchQuery: string;
     onSearchChange: (query: string) => void;
-    dateFilter: string;
-    onDateFilterChange: (date: string) => void;
-    iconFilter: string;
-    onIconFilterChange: (icon: string) => void;
-    availableIcons: string[];
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onExport: () => void;
     onRemoveAll: () => void;
     isImporting: boolean;
     hasPlaces: boolean;
+    dateFilter: string;
+    onDateFilterChange: (date: string) => void;
+    iconFilter: string;
+    onIconFilterChange: (icon: string) => void;
+    availableIcons: string[];
 }
 
 export const TravelHeader: React.FC<TravelHeaderProps> = ({
     searchQuery,
     onSearchChange,
+    onImport,
+    onExport,
+    onRemoveAll,
+    isImporting,
+    hasPlaces,
     dateFilter,
     onDateFilterChange,
     iconFilter,
     onIconFilterChange,
     availableIcons,
-    onImport,
-    onExport,
-    onRemoveAll,
-    isImporting,
-    hasPlaces
 }) => {
     return (
-        <header className="mf-travel-header flex flex-col md:flex-row items-center justify-between px-6 py-4 border-b bg-card shadow-sm z-10 gap-4">
+        <header className="mf-travel-header flex flex-col md:flex-row items-center justify-between px-6 py-4 border-b bg-card z-10 gap-4">
             <div className="flex items-center gap-3 self-start md:self-center">
                 <div className="bg-primary p-2 rounded-lg">
                     <Globe className="w-5 h-5 text-primary-foreground" />
@@ -57,26 +57,13 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
                         />
                     </div>
 
-                    <input
-                        type="date"
-                        value={dateFilter}
-                        onChange={(e) => onDateFilterChange(e.target.value)}
-                        className="px-3 py-2 bg-muted/50 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                        title="Filter by date"
+                    <MoreFilters
+                        dateFilter={dateFilter}
+                        onDateFilterChange={onDateFilterChange}
+                        iconFilter={iconFilter}
+                        onIconFilterChange={onIconFilterChange}
+                        availableIcons={availableIcons}
                     />
-
-                    <select
-                        value={iconFilter}
-                        onChange={(e) => onIconFilterChange(e.target.value)}
-                        className="px-3 py-2 bg-muted/50 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all min-w-[120px]"
-                    >
-                        <option value="">All types</option>
-                        {availableIcons.map(icon => (
-                            <option key={icon} value={icon}>
-                                {EMOJI_MAP[icon] ? `${EMOJI_MAP[icon]} ${icon}` : icon}
-                            </option>
-                        ))}
-                    </select>
                 </div>
 
                 <div className="flex items-center gap-2">

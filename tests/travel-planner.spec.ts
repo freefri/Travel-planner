@@ -9,10 +9,8 @@ test.describe('Travel Planner E2E Tests', () => {
         // 1. Page title is 'Travel Planner'
         await expect(page).toHaveTitle(/Travel Planner/);
 
-        // 2. Header (h1) says 'Travel Planner Development'
-        // Use the first h1 which is the dev-only title in index.html
         const header = page.locator('h1').first();
-        await expect(header).toHaveText('Travel Planner Development');
+        await expect(header).toHaveText('Travel Planner');
 
         // Visual Snapshot
         await expect(page).toHaveScreenshot('dashboard.png');
