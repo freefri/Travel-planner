@@ -1,7 +1,6 @@
 import React from 'react';
-import { Globe, Search, Import, Download } from 'lucide-react';
-import { Button } from './ui/button';
-import { cn } from '../lib/utils';
+import { Globe, Search } from 'lucide-react';
+import { TravelActions } from './TravelActions';
 import { EMOJI_MAP } from '../lib/place-utils';
 
 interface TravelHeaderProps {
@@ -14,6 +13,7 @@ interface TravelHeaderProps {
     availableIcons: string[];
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onExport: () => void;
+    onRemoveAll: () => void;
     isImporting: boolean;
     hasPlaces: boolean;
 }
@@ -28,6 +28,7 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
     availableIcons,
     onImport,
     onExport,
+    onRemoveAll,
     isImporting,
     hasPlaces
 }) => {
@@ -79,31 +80,13 @@ export const TravelHeader: React.FC<TravelHeaderProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <label className="relative cursor-pointer">
-                        <input
-                            type="file"
-                            accept=".kmz,.kml"
-                            className="hidden"
-                            onChange={onImport}
-                            disabled={isImporting}
-                        />
-                        <div className={cn(
-                            "flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold hover:opacity-90 transition-all shadow-sm active:scale-95",
-                            isImporting && "animate-pulse grayscale cursor-wait"
-                        )}>
-                            <Import className="w-4 h-4" />
-                            <span>{isImporting ? 'Parsing...' : 'Import'}</span>
-                        </div>
-                    </label>
-
-                    <Button
-                        onClick={onExport}
-                        disabled={!hasPlaces}
-                        className="rounded-full bg-primary text-primary-foreground px-4 py-2 flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
-                    >
-                        <Download className="w-4 h-4" />
-                        <span>Export KMZ</span>
-                    </Button>
+                    <TravelActions
+                        onImport={onImport}
+                        onExport={onExport}
+                        onRemoveAll={onRemoveAll}
+                        isImporting={isImporting}
+                        hasPlaces={hasPlaces}
+                    />
                 </div>
             </div>
         </header>

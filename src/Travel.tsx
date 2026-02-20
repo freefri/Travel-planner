@@ -192,6 +192,12 @@ export const Travel = () => {
     }
   }, []);
 
+  const handleRemoveAll = useCallback(() => {
+    setPlaces([]);
+    setSelectedPlaceId(null);
+    setSearchedIds(new Set());
+  }, []);
+
   const handleFormChange = (updates: Partial<Place>) => {
     setEditForm(prev => ({ ...prev, ...updates }));
   };
@@ -207,6 +213,7 @@ export const Travel = () => {
         availableIcons={availableIcons}
         onImport={handleFileImport}
         onExport={handleExport}
+        onRemoveAll={handleRemoveAll}
         isImporting={isImporting}
         hasPlaces={places.length > 0}
       />
