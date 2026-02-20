@@ -115,7 +115,7 @@ var Travel = function Travel() {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
               placesToSearch = places.filter(function (p) {
-                return !searchedIds.has(p.id) && (!p.description || !p.ddgImage);
+                return !searchedIds.has(p.id) && (!p.description || !p.imageUrl);
               });
               if (!(placesToSearch.length === 0)) {
                 _context2.n = 1;
@@ -142,7 +142,7 @@ var Travel = function Travel() {
                     case 0:
                       place = _step.value;
                       place = (0,_lib_kmz_parser__WEBPACK_IMPORTED_MODULE_1__.extractDuckDuckGoImageFromDescription)(place);
-                      if (!(!place.description || !place.ddgImage)) {
+                      if (!(!place.description || !place.imageUrl)) {
                         _context.n = 2;
                         break;
                       }
@@ -156,7 +156,7 @@ var Travel = function Travel() {
                           return prev.map(function (p) {
                             return p.id === place.id ? _objectSpread(_objectSpread({}, p), {}, {
                               description: p.description || data["abstract"] || 'no-info-retrieved',
-                              ddgImage: data.image || p.ddgImage
+                              imageUrl: data.image || p.imageUrl
                             }) : p;
                           });
                         });
@@ -363,13 +363,18 @@ var Travel = function Travel() {
       setSelectedPlaceId(null);
     }
   }, []);
+  var handleRemoveAll = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    setPlaces([]);
+    setSelectedPlaceId(null);
+    setSearchedIds(new Set());
+  }, []);
   var handleFormChange = function handleFormChange(updates) {
     setEditForm(function (prev) {
       return _objectSpread(_objectSpread({}, prev), updates);
     });
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-    className: "mf-travel flex h-screen w-full flex-col bg-background text-foreground overflow-hidden",
+    className: "mf-travel flex min-h-screen w-full flex-col bg-background text-foreground",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_TravelHeader__WEBPACK_IMPORTED_MODULE_4__.TravelHeader, {
       searchQuery: searchQuery,
       onSearchChange: setSearchQuery,
@@ -380,10 +385,11 @@ var Travel = function Travel() {
       availableIcons: availableIcons,
       onImport: handleFileImport,
       onExport: handleExport,
+      onRemoveAll: handleRemoveAll,
       isImporting: isImporting,
       hasPlaces: places.length > 0
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("main", {
-      className: "flex-1 overflow-y-auto p-6 bg-muted/20",
+      className: "flex-1 p-6 bg-muted/20",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_TravelGrid__WEBPACK_IMPORTED_MODULE_3__.TravelGrid, {
         places: filteredPlaces,
         selectedPlaceId: selectedPlaceId,
@@ -513,7 +519,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 var FEATURE_TYPE_OPTIONS = ['tourism-attraction', 'landmark', 'restaurant', 'hotel', 'shop', 'transit-station', 'nature-reserve'];
 var EditPlaceModal = function EditPlaceModal(_ref) {
-  var _ref2, _editForm$imageUrl, _editForm$ddgImage, _ref3, _editForm$extendedDat5, _editForm$extendedDat6, _place$extendedData3, _editForm$name3, _ref4, _editForm$imageUrl2, _place$extendedData4, _ref5, _editForm$description, _place$extendedData5, _editForm$coordinates, _editForm$coordinates2, _editForm$coordinates3, _editForm$coordinates4, _editForm$timestamp4, _editForm$styleUrl, _ref6, _editForm$extendedDat7, _editForm$extendedDat8, _place$extendedData6, _ref7, _editForm$extendedDat9, _editForm$extendedDat0, _place$extendedData7, _ref9, _editForm$extendedDat11, _editForm$extendedDat12, _place$extendedData9, _ref0, _editForm$extendedDat13, _editForm$extendedDat14, _place$extendedData0, _ref1, _editForm$extendedDat15, _editForm$extendedDat16, _place$extendedData1, _place$extendedData10;
+  var _editForm$imageUrl, _ref2, _editForm$extendedDat5, _editForm$extendedDat6, _place$extendedData3, _editForm$name3, _ref3, _editForm$imageUrl2, _place$extendedData4, _ref4, _editForm$description, _place$extendedData5, _editForm$coordinates, _editForm$coordinates2, _editForm$coordinates3, _editForm$coordinates4, _editForm$timestamp4, _editForm$styleUrl, _ref5, _editForm$extendedDat7, _editForm$extendedDat8, _place$extendedData6, _ref6, _editForm$extendedDat9, _editForm$extendedDat0, _place$extendedData7, _ref8, _editForm$extendedDat11, _editForm$extendedDat12, _place$extendedData9, _ref9, _editForm$extendedDat13, _editForm$extendedDat14, _place$extendedData0, _ref0, _editForm$extendedDat15, _editForm$extendedDat16, _place$extendedData1, _place$extendedData10;
   var place = _ref.place,
     isEditing = _ref.isEditing,
     editForm = _ref.editForm,
@@ -591,18 +597,18 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
     });
   };
   var gmapsUrl = "https://www.google.com/maps/search/?api=1&query=".concat(place.coordinates.lat, ",").concat(place.coordinates.lng);
-  var currentImg = (_ref2 = (_editForm$imageUrl = editForm.imageUrl) !== null && _editForm$imageUrl !== void 0 ? _editForm$imageUrl : place.imageUrl) !== null && _ref2 !== void 0 ? _ref2 : (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.getPlaceholderImage)(place.name, place.id, (_editForm$ddgImage = editForm.ddgImage) !== null && _editForm$ddgImage !== void 0 ? _editForm$ddgImage : place.ddgImage, 800, 400);
-  var currentFeatureType = (_ref3 = (_editForm$extendedDat5 = (_editForm$extendedDat6 = editForm.extendedData) === null || _editForm$extendedDat6 === void 0 || (_editForm$extendedDat6 = _editForm$extendedDat6.featureTypes) === null || _editForm$extendedDat6 === void 0 ? void 0 : _editForm$extendedDat6[0]) !== null && _editForm$extendedDat5 !== void 0 ? _editForm$extendedDat5 : (_place$extendedData3 = place.extendedData) === null || _place$extendedData3 === void 0 || (_place$extendedData3 = _place$extendedData3.featureTypes) === null || _place$extendedData3 === void 0 ? void 0 : _place$extendedData3[0]) !== null && _ref3 !== void 0 ? _ref3 : '';
+  var bgImage = (_editForm$imageUrl = editForm.imageUrl) !== null && _editForm$imageUrl !== void 0 ? _editForm$imageUrl : (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.getPlaceholderImage)(place);
+  var currentFeatureType = (_ref2 = (_editForm$extendedDat5 = (_editForm$extendedDat6 = editForm.extendedData) === null || _editForm$extendedDat6 === void 0 || (_editForm$extendedDat6 = _editForm$extendedDat6.featureTypes) === null || _editForm$extendedDat6 === void 0 ? void 0 : _editForm$extendedDat6[0]) !== null && _editForm$extendedDat5 !== void 0 ? _editForm$extendedDat5 : (_place$extendedData3 = place.extendedData) === null || _place$extendedData3 === void 0 || (_place$extendedData3 = _place$extendedData3.featureTypes) === null || _place$extendedData3 === void 0 ? void 0 : _place$extendedData3[0]) !== null && _ref2 !== void 0 ? _ref2 : '';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
     className: "mf-edit-place-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
       className: "bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border animate-in zoom-in-95 duration-300",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "relative h-64",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-          src: currentImg,
+        className: "relative h-64 bg-gray-600",
+        children: [bgImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+          src: bgImage,
           alt: place.name,
-          className: "w-full h-full object-cover bg-gray-600"
+          className: "w-full h-full object-cover"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
           className: "absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
@@ -624,7 +630,7 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
               placeholder: "Place name"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
               className: "bg-black/40 border border-white/20 text-xs w-full rounded px-2 py-1 outline-none focus:border-primary transition-all text-white/70",
-              value: (_ref4 = (_editForm$imageUrl2 = editForm.imageUrl) !== null && _editForm$imageUrl2 !== void 0 ? _editForm$imageUrl2 : place.imageUrl) !== null && _ref4 !== void 0 ? _ref4 : '',
+              value: (_ref3 = (_editForm$imageUrl2 = editForm.imageUrl) !== null && _editForm$imageUrl2 !== void 0 ? _editForm$imageUrl2 : place.imageUrl) !== null && _ref3 !== void 0 ? _ref3 : '',
               onChange: function onChange(e) {
                 return handleImageUrlChange(e.target.value);
               },
@@ -632,7 +638,7 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
             })]
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-              className: "text-xs font-bold uppercase tracking-widest text-primary mb-1",
+              className: "text-xs font-bold uppercase tracking-widest text-white/70 mb-1",
               children: ((_place$extendedData4 = place.extendedData) === null || _place$extendedData4 === void 0 || (_place$extendedData4 = _place$extendedData4.featureTypes) === null || _place$extendedData4 === void 0 ? void 0 : _place$extendedData4[0]) || 'Destination'
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h2", {
               className: "text-3xl font-bold",
@@ -652,7 +658,7 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
               }), "Description"]
             }), isEditing ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("textarea", {
               className: "w-full h-32 bg-muted/50 border rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all",
-              value: (_ref5 = (_editForm$description = editForm.description) !== null && _editForm$description !== void 0 ? _editForm$description : place.description) !== null && _ref5 !== void 0 ? _ref5 : '',
+              value: (_ref4 = (_editForm$description = editForm.description) !== null && _editForm$description !== void 0 ? _editForm$description : place.description) !== null && _ref4 !== void 0 ? _ref4 : '',
               onChange: function onChange(e) {
                 return onFormChange({
                   description: e.target.value
@@ -837,10 +843,10 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
                 className: "ml-7 space-y-2 max-w-[calc(100%-28px)]",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("select", {
                   className: "w-full bg-white border rounded p-1 text-xs",
-                  value: _lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.ICON_OPTIONS.includes((_ref6 = (_editForm$extendedDat7 = (_editForm$extendedDat8 = editForm.extendedData) === null || _editForm$extendedDat8 === void 0 ? void 0 : _editForm$extendedDat8.icon) !== null && _editForm$extendedDat7 !== void 0 ? _editForm$extendedDat7 : (_place$extendedData6 = place.extendedData) === null || _place$extendedData6 === void 0 ? void 0 : _place$extendedData6.icon) !== null && _ref6 !== void 0 ? _ref6 : '') ? (_ref7 = (_editForm$extendedDat9 = (_editForm$extendedDat0 = editForm.extendedData) === null || _editForm$extendedDat0 === void 0 ? void 0 : _editForm$extendedDat0.icon) !== null && _editForm$extendedDat9 !== void 0 ? _editForm$extendedDat9 : (_place$extendedData7 = place.extendedData) === null || _place$extendedData7 === void 0 ? void 0 : _place$extendedData7.icon) !== null && _ref7 !== void 0 ? _ref7 : '' : 'custom',
+                  value: _lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.ICON_OPTIONS.includes((_ref5 = (_editForm$extendedDat7 = (_editForm$extendedDat8 = editForm.extendedData) === null || _editForm$extendedDat8 === void 0 ? void 0 : _editForm$extendedDat8.icon) !== null && _editForm$extendedDat7 !== void 0 ? _editForm$extendedDat7 : (_place$extendedData6 = place.extendedData) === null || _place$extendedData6 === void 0 ? void 0 : _place$extendedData6.icon) !== null && _ref5 !== void 0 ? _ref5 : '') ? (_ref6 = (_editForm$extendedDat9 = (_editForm$extendedDat0 = editForm.extendedData) === null || _editForm$extendedDat0 === void 0 ? void 0 : _editForm$extendedDat0.icon) !== null && _editForm$extendedDat9 !== void 0 ? _editForm$extendedDat9 : (_place$extendedData7 = place.extendedData) === null || _place$extendedData7 === void 0 ? void 0 : _place$extendedData7.icon) !== null && _ref6 !== void 0 ? _ref6 : '' : 'custom',
                   onChange: function onChange(e) {
-                    var _ref8, _editForm$extendedDat1, _editForm$extendedDat10, _place$extendedData8;
-                    return handleIconChange(e.target.value === 'custom' ? (_ref8 = (_editForm$extendedDat1 = (_editForm$extendedDat10 = editForm.extendedData) === null || _editForm$extendedDat10 === void 0 ? void 0 : _editForm$extendedDat10.icon) !== null && _editForm$extendedDat1 !== void 0 ? _editForm$extendedDat1 : (_place$extendedData8 = place.extendedData) === null || _place$extendedData8 === void 0 ? void 0 : _place$extendedData8.icon) !== null && _ref8 !== void 0 ? _ref8 : '' : e.target.value);
+                    var _ref7, _editForm$extendedDat1, _editForm$extendedDat10, _place$extendedData8;
+                    return handleIconChange(e.target.value === 'custom' ? (_ref7 = (_editForm$extendedDat1 = (_editForm$extendedDat10 = editForm.extendedData) === null || _editForm$extendedDat10 === void 0 ? void 0 : _editForm$extendedDat10.icon) !== null && _editForm$extendedDat1 !== void 0 ? _editForm$extendedDat1 : (_place$extendedData8 = place.extendedData) === null || _place$extendedData8 === void 0 ? void 0 : _place$extendedData8.icon) !== null && _ref7 !== void 0 ? _ref7 : '' : e.target.value);
                   },
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
                     value: "",
@@ -854,11 +860,11 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
                     value: "custom",
                     children: "Custom..."
                   })]
-                }), !_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.ICON_OPTIONS.includes((_ref9 = (_editForm$extendedDat11 = (_editForm$extendedDat12 = editForm.extendedData) === null || _editForm$extendedDat12 === void 0 ? void 0 : _editForm$extendedDat12.icon) !== null && _editForm$extendedDat11 !== void 0 ? _editForm$extendedDat11 : (_place$extendedData9 = place.extendedData) === null || _place$extendedData9 === void 0 ? void 0 : _place$extendedData9.icon) !== null && _ref9 !== void 0 ? _ref9 : '') && ((_ref0 = (_editForm$extendedDat13 = (_editForm$extendedDat14 = editForm.extendedData) === null || _editForm$extendedDat14 === void 0 ? void 0 : _editForm$extendedDat14.icon) !== null && _editForm$extendedDat13 !== void 0 ? _editForm$extendedDat13 : (_place$extendedData0 = place.extendedData) === null || _place$extendedData0 === void 0 ? void 0 : _place$extendedData0.icon) !== null && _ref0 !== void 0 ? _ref0 : '') !== '' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+                }), !_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.ICON_OPTIONS.includes((_ref8 = (_editForm$extendedDat11 = (_editForm$extendedDat12 = editForm.extendedData) === null || _editForm$extendedDat12 === void 0 ? void 0 : _editForm$extendedDat12.icon) !== null && _editForm$extendedDat11 !== void 0 ? _editForm$extendedDat11 : (_place$extendedData9 = place.extendedData) === null || _place$extendedData9 === void 0 ? void 0 : _place$extendedData9.icon) !== null && _ref8 !== void 0 ? _ref8 : '') && ((_ref9 = (_editForm$extendedDat13 = (_editForm$extendedDat14 = editForm.extendedData) === null || _editForm$extendedDat14 === void 0 ? void 0 : _editForm$extendedDat14.icon) !== null && _editForm$extendedDat13 !== void 0 ? _editForm$extendedDat13 : (_place$extendedData0 = place.extendedData) === null || _place$extendedData0 === void 0 ? void 0 : _place$extendedData0.icon) !== null && _ref9 !== void 0 ? _ref9 : '') !== '' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
                   type: "text",
                   className: "w-full bg-white border rounded p-1 text-xs",
                   placeholder: "Custom icon name",
-                  value: (_ref1 = (_editForm$extendedDat15 = (_editForm$extendedDat16 = editForm.extendedData) === null || _editForm$extendedDat16 === void 0 ? void 0 : _editForm$extendedDat16.icon) !== null && _editForm$extendedDat15 !== void 0 ? _editForm$extendedDat15 : (_place$extendedData1 = place.extendedData) === null || _place$extendedData1 === void 0 ? void 0 : _place$extendedData1.icon) !== null && _ref1 !== void 0 ? _ref1 : '',
+                  value: (_ref0 = (_editForm$extendedDat15 = (_editForm$extendedDat16 = editForm.extendedData) === null || _editForm$extendedDat16 === void 0 ? void 0 : _editForm$extendedDat16.icon) !== null && _editForm$extendedDat15 !== void 0 ? _editForm$extendedDat15 : (_place$extendedData1 = place.extendedData) === null || _place$extendedData1 === void 0 ? void 0 : _place$extendedData1.icon) !== null && _ref0 !== void 0 ? _ref0 : '',
                   onChange: function onChange(e) {
                     return handleIconChange(e.target.value);
                   }
@@ -889,6 +895,123 @@ var EditPlaceModal = function EditPlaceModal(_ref) {
         })]
       })]
     })
+  });
+};
+
+}),
+"./src/components/MoreFilters.tsx": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  MoreFilters: function() { return MoreFilters; }
+});
+/* ESM import */var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* ESM import */var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/funnel.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/chevron-up.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/chevron-down.js");
+/* ESM import */var _ui_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui/button */ "./src/components/ui/button.tsx");
+/* ESM import */var _lib_place_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/place-utils */ "./src/lib/place-utils.ts");
+/* ESM import */var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+var MoreFilters = function MoreFilters(_ref) {
+  var dateFilter = _ref.dateFilter,
+    onDateFilterChange = _ref.onDateFilterChange,
+    iconFilter = _ref.iconFilter,
+    onIconFilterChange = _ref.onIconFilterChange,
+    availableIcons = _ref.availableIcons;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isOpen = _useState2[0],
+    setIsOpen = _useState2[1];
+  var dropdownRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var handleClickOutside = function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return function () {
+      return document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  var hasActiveFilters = dateFilter !== '' || iconFilter !== '';
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "relative",
+    ref: dropdownRef,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_ui_button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      variant: "outline",
+      onClick: function onClick() {
+        return setIsOpen(!isOpen);
+      },
+      className: "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ".concat(hasActiveFilters ? 'border-primary text-primary bg-primary/5' : ''),
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        className: "w-4 h-4"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        children: "More Filters"
+      }), hasActiveFilters && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        className: "flex h-2 w-2 rounded-full bg-primary"
+      }), isOpen ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        className: "w-4 h-4 ml-1"
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        className: "w-4 h-4 ml-1"
+      })]
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "absolute left-0 mt-2 w-72 bg-card bg-white border rounded-xl shadow-xl z-50 p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "space-y-2",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+          children: "Filter by Date"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+          type: "date",
+          value: dateFilter,
+          onChange: function onChange(e) {
+            return onDateFilterChange(e.target.value);
+          },
+          className: "w-full px-3 py-2 bg-muted/50 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "space-y-2",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+          children: "Filter by Category"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+          value: iconFilter,
+          onChange: function onChange(e) {
+            return onIconFilterChange(e.target.value);
+          },
+          className: "w-full px-3 py-2 bg-muted/50 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+            value: "",
+            children: "All types"
+          }), availableIcons.map(function (icon) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+              value: icon,
+              children: _lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.EMOJI_MAP[icon] ? "".concat(_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.EMOJI_MAP[icon], " ").concat(icon) : icon
+            }, icon);
+          })]
+        })]
+      }), (dateFilter || iconFilter) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+        onClick: function onClick() {
+          onDateFilterChange('');
+          onIconFilterChange('');
+        },
+        className: "text-xs text-primary hover:underline w-full text-center py-1 mt-2",
+        children: "Reset Filters"
+      })]
+    })]
   });
 };
 
@@ -1008,6 +1131,128 @@ var StatsFooter = function StatsFooter(_ref) {
 };
 
 }),
+"./src/components/TravelActions.tsx": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  TravelActions: function() { return TravelActions; }
+});
+/* ESM import */var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* ESM import */var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/x.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/menu.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/import.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/download.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/trash-2.js");
+/* ESM import */var _ui_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui/button */ "./src/components/ui/button.tsx");
+/* ESM import */var _lib_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/utils */ "./src/lib/utils.ts");
+/* ESM import */var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+var TravelActions = function TravelActions(_ref) {
+  var onImport = _ref.onImport,
+    onExport = _ref.onExport,
+    onRemoveAll = _ref.onRemoveAll,
+    isImporting = _ref.isImporting,
+    hasPlaces = _ref.hasPlaces;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isOpen = _useState2[0],
+    setIsOpen = _useState2[1];
+  var dropdownRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var handleClickOutside = function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return function () {
+      return document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  var handleAction = function handleAction(action) {
+    action();
+    setIsOpen(false);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "relative",
+    ref: dropdownRef,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_ui_button__WEBPACK_IMPORTED_MODULE_1__.Button, {
+      variant: "outline",
+      size: "icon",
+      onClick: function onClick() {
+        return setIsOpen(!isOpen);
+      },
+      className: "rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border-2",
+      "aria-label": "Actions Menu",
+      children: isOpen ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        className: "w-5 h-5"
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        className: "w-5 h-5"
+      })
+    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "absolute right-0 mt-2 w-56 bg-card border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "p-2 space-y-1 bg-white",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("label", {
+          className: "flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted rounded-lg cursor-pointer transition-colors",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+            type: "file",
+            accept: ".kmz,.kml",
+            className: "hidden",
+            onChange: function onChange(e) {
+              onImport(e);
+              setIsOpen(false);
+            },
+            disabled: isImporting
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("w-4 h-4 text-primary", isImporting && "animate-pulse")
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            children: isImporting ? 'Importing...' : 'Import KMZ/KML'
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+          onClick: function onClick() {
+            return handleAction(onExport);
+          },
+          disabled: !hasPlaces,
+          className: "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
+            className: "w-4 h-4 text-primary"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            children: "Export KMZ"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "h-px bg-border my-1"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+          onClick: function onClick() {
+            if (confirm('Are you sure you want to remove ALL places? This action cannot be undone.')) {
+              handleAction(onRemoveAll);
+            }
+          },
+          disabled: !hasPlaces,
+          className: "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_8__["default"], {
+            className: "w-4 h-4"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            children: "Remove All Places"
+          })]
+        })]
+      })
+    })]
+  });
+};
+
+}),
 "./src/components/TravelCard.tsx": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1036,7 +1281,7 @@ var TravelCard = function TravelCard(_ref) {
   var styleColor = (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.getColorFromStyle)(place.styleUrl);
 
   // Use custom image or deterministic "random" image from picsum
-  var bgImage = place.imageUrl || (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.getPlaceholderImage)(place.name, place.id, place.ddgImage, 400, 200);
+  var bgImage = place.imageUrl || (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.getPlaceholderImage)(place);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     onClick: onClick,
     className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_1__.cn)("mf-travel-card relative group cursor-pointer overflow-hidden rounded-xl border-3 transition-all duration-300 hover:shadow-2xl", isSelected ? "ring-2 ring-primary border-primary shadow-lg" : "border-transparent"),
@@ -1045,15 +1290,15 @@ var TravelCard = function TravelCard(_ref) {
     } : {},
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110 bg-gray-600",
-      style: {
+      style: bgImage ? {
         backgroundImage: "url(".concat(bgImage, ")")
-      }
+      } : {}
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "relative h-48 p-4 flex flex-col justify-end text-white",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-        className: "flex items-center gap-2 mb-1",
+        className: "flex items-center gap-2 mb-1 group-hover:opacity-40 transition-opacity",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
           className: "w-4 h-4 text-primary bg-opacity-50 bg-white rounded",
           style: {
@@ -1064,7 +1309,7 @@ var TravelCard = function TravelCard(_ref) {
           children: ((_place$extendedData = place.extendedData) === null || _place$extendedData === void 0 || (_place$extendedData = _place$extendedData.featureTypes) === null || _place$extendedData === void 0 ? void 0 : _place$extendedData[0]) || 'Point of Interest'
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h3", {
-        className: "text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors",
+        className: "text-xl font-bold leading-tight mb-2 group-hover:opacity-75 transition-opacity",
         children: place.name
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "flex items-center justify-between text-xs text-white/70",
@@ -1223,15 +1468,11 @@ __webpack_require__.d(__webpack_exports__, {
 });
 /* ESM import */var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* ESM import */var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/globe.js");
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/search.js");
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/import.js");
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/download.js");
-/* ESM import */var _ui_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui/button */ "./src/components/ui/button.tsx");
-/* ESM import */var _lib_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/utils */ "./src/lib/utils.ts");
-/* ESM import */var _lib_place_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../lib/place-utils */ "./src/lib/place-utils.ts");
-/* ESM import */var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/globe.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/search.js");
+/* ESM import */var _TravelActions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TravelActions */ "./src/components/TravelActions.tsx");
+/* ESM import */var _MoreFilters__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MoreFilters */ "./src/components/MoreFilters.tsx");
+/* ESM import */var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 
@@ -1240,42 +1481,43 @@ __webpack_require__.d(__webpack_exports__, {
 var TravelHeader = function TravelHeader(_ref) {
   var searchQuery = _ref.searchQuery,
     onSearchChange = _ref.onSearchChange,
+    onImport = _ref.onImport,
+    onExport = _ref.onExport,
+    onRemoveAll = _ref.onRemoveAll,
+    isImporting = _ref.isImporting,
+    hasPlaces = _ref.hasPlaces,
     dateFilter = _ref.dateFilter,
     onDateFilterChange = _ref.onDateFilterChange,
     iconFilter = _ref.iconFilter,
     onIconFilterChange = _ref.onIconFilterChange,
-    availableIcons = _ref.availableIcons,
-    onImport = _ref.onImport,
-    onExport = _ref.onExport,
-    isImporting = _ref.isImporting,
-    hasPlaces = _ref.hasPlaces;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("header", {
-    className: "mf-travel-header flex flex-col md:flex-row items-center justify-between px-6 py-4 border-b bg-card shadow-sm z-10 gap-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+    availableIcons = _ref.availableIcons;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("header", {
+    className: "mf-travel-header flex flex-col md:flex-row items-center justify-between px-6 py-4 border-b bg-card z-10 gap-4",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "flex items-center gap-3 self-start md:self-center",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "bg-primary p-2 rounded-lg",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_4__["default"], {
           className: "w-5 h-5 text-primary-foreground"
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h1", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
           className: "text-xl font-bold tracking-tight",
           children: "Travel Planner"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
           className: "text-xs text-muted-foreground uppercase tracking-widest font-medium",
           children: "KMZ Explorer"
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "flex flex-wrap items-center gap-4 w-full md:w-auto",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "flex flex-wrap items-center gap-2 flex-grow md:flex-grow-0",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "relative group flex-grow md:flex-grow-0",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_5__["default"], {
             className: "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-primary"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
             type: "text",
             placeholder: "Search places...",
             value: searchQuery,
@@ -1284,58 +1526,22 @@ var TravelHeader = function TravelHeader(_ref) {
             },
             className: "pl-10 pr-4 py-2 bg-muted/50 border rounded-full text-sm w-full md:w-48 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-          type: "date",
-          value: dateFilter,
-          onChange: function onChange(e) {
-            return onDateFilterChange(e.target.value);
-          },
-          className: "px-3 py-2 bg-muted/50 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all",
-          title: "Filter by date"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("select", {
-          value: iconFilter,
-          onChange: function onChange(e) {
-            return onIconFilterChange(e.target.value);
-          },
-          className: "px-3 py-2 bg-muted/50 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all min-w-[120px]",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-            value: "",
-            children: "All types"
-          }), availableIcons.map(function (icon) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("option", {
-              value: icon,
-              children: _lib_place_utils__WEBPACK_IMPORTED_MODULE_3__.EMOJI_MAP[icon] ? "".concat(_lib_place_utils__WEBPACK_IMPORTED_MODULE_3__.EMOJI_MAP[icon], " ").concat(icon) : icon
-            }, icon);
-          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_MoreFilters__WEBPACK_IMPORTED_MODULE_2__.MoreFilters, {
+          dateFilter: dateFilter,
+          onDateFilterChange: onDateFilterChange,
+          iconFilter: iconFilter,
+          onIconFilterChange: onIconFilterChange,
+          availableIcons: availableIcons
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "flex items-center gap-2",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("label", {
-          className: "relative cursor-pointer",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-            type: "file",
-            accept: ".kmz,.kml",
-            className: "hidden",
-            onChange: onImport,
-            disabled: isImporting
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-            className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold hover:opacity-90 transition-all shadow-sm active:scale-95", isImporting && "animate-pulse grayscale cursor-wait"),
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
-              className: "w-4 h-4"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-              children: isImporting ? 'Parsing...' : 'Import'
-            })]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_ui_button__WEBPACK_IMPORTED_MODULE_1__.Button, {
-          onClick: onExport,
-          disabled: !hasPlaces,
-          className: "rounded-full bg-primary text-primary-foreground px-4 py-2 flex items-center gap-2 shadow-md hover:shadow-lg transition-all",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_8__["default"], {
-            className: "w-4 h-4"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
-            children: "Export KMZ"
-          })]
-        })]
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TravelActions__WEBPACK_IMPORTED_MODULE_1__.TravelActions, {
+          onImport: onImport,
+          onExport: onExport,
+          onRemoveAll: onRemoveAll,
+          isImporting: isImporting,
+          hasPlaces: hasPlaces
+        })
       })]
     })]
   });
@@ -1425,10 +1631,12 @@ __webpack_require__.d(__webpack_exports__, {
 });
 /* ESM import */var jszip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jszip */ "./node_modules/jszip/dist/jszip.min.js");
 /* ESM import */var jszip__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jszip__WEBPACK_IMPORTED_MODULE_0__);
+/* ESM import */var _place_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./place-utils */ "./src/lib/place-utils.ts");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+
 
 var MWM_NS = 'https://omaps.app';
 function parseKMZ(_x) {
@@ -1487,7 +1695,9 @@ function extractDuckDuckGoImageFromDescription(place) {
   if (place.description && place.description.includes('<img src="https://')) {
     var imgMatch = place.description.match(/<img src="(https:\/\/[^"]+)"[^>]*>/);
     if (imgMatch) {
-      place.ddgImage = imgMatch[1];
+      if (!place.imageUrl) {
+        place.imageUrl = imgMatch[1];
+      }
       // Remove the image tag from the visual description
       place.description = place.description.replace(/<img src="https:\/\/[^"]+"[^>]*>/, '').trim();
     }
@@ -1611,12 +1821,14 @@ function generateKML(data) {
     content += "  <ExtendedData>\n    <mwm:lastModified>".concat(data.lastModified, "</mwm:lastModified>\n  </ExtendedData>\n");
   }
   data.places.forEach(function (place) {
+    var _place$extendedData;
+    var formattedName = (0,_place_utils__WEBPACK_IMPORTED_MODULE_1__.formatPlaceName)(place.name, place.timestamp, (_place$extendedData = place.extendedData) === null || _place$extendedData === void 0 ? void 0 : _place$extendedData.icon);
     content += '  <Placemark>\n';
-    content += "    <name>".concat(escapeXML(place.name), "</name>\n");
-    if (place.description || place.ddgImage) {
+    content += "    <name>".concat(escapeXML(formattedName), "</name>\n");
+    if (place.description || place.imageUrl) {
       var desc = place.description || '';
-      if (place.ddgImage) {
-        desc += (desc ? '\n' : '') + "<img src=\"".concat(place.ddgImage, "\" style=\"max-width:300px; display:block; margin: 10px 0;\">");
+      if (place.imageUrl) {
+        desc += (desc ? '\n' : '') + "<img src=\"".concat(place.imageUrl, "\" style=\"max-width:300px; display:block; margin: 10px 0;\">");
       }
       content += "    <description>".concat(escapeXML(desc), "</description>\n");
     }
@@ -1628,6 +1840,7 @@ function generateKML(data) {
     }
     content += "    <Point><coordinates>".concat(place.coordinates.lng, ",").concat(place.coordinates.lat).concat(place.coordinates.alt !== undefined ? ',' + place.coordinates.alt : '', "</coordinates></Point>\n");
     if (place.extendedData) {
+      var _place$extendedData2;
       content += '    <ExtendedData>\n';
       var ed = place.extendedData;
       var writeLangs = function writeLangs(tagName, langs) {
@@ -1641,7 +1854,11 @@ function generateKML(data) {
       };
       content += writeLangs('name', ed.name);
       content += writeLangs('description', ed.description);
-      content += writeLangs('customName', ed.customName);
+      var _formattedName = (0,_place_utils__WEBPACK_IMPORTED_MODULE_1__.formatPlaceName)(place.name, place.timestamp, (_place$extendedData2 = place.extendedData) === null || _place$extendedData2 === void 0 ? void 0 : _place$extendedData2.icon);
+      content += writeLangs('customName', [{
+        code: 'default',
+        value: _formattedName
+      }]);
       if (ed.featureTypes && ed.featureTypes.length > 0) {
         content += '      <mwm:featureTypes>\n';
         ed.featureTypes.forEach(function (t) {
@@ -1757,10 +1974,8 @@ var getSafeSeed = function getSafeSeed(name) {
     return fallback;
   }
 };
-var getPlaceholderImage = function getPlaceholderImage(name, id, ddgImage) {
-  var width = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 400;
-  var height = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 200;
-  if (ddgImage) return ddgImage;
+var getPlaceholderImage = function getPlaceholderImage(place) {
+  if (place.imageUrl) return place.imageUrl;
   return '';
   // const seed = getSafeSeed(name, id || 'random');
   // return `https://picsum.photos/seed/${seed}/${width}/${height}`;
@@ -3270,6 +3485,56 @@ const Calendar = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"]
 
 
 }),
+"./node_modules/lucide-react/dist/esm/icons/chevron-down.js": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  __iconNode: function() { return __iconNode; },
+  "default": function() { return ChevronDown; }
+});
+/* ESM import */var _createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../createLucideIcon.js */ "./node_modules/lucide-react/dist/esm/createLucideIcon.js");
+/**
+ * @license lucide-react v0.562.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+
+const __iconNode = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"])("chevron-down", __iconNode);
+
+
+//# sourceMappingURL=chevron-down.js.map
+
+
+}),
+"./node_modules/lucide-react/dist/esm/icons/chevron-up.js": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  __iconNode: function() { return __iconNode; },
+  "default": function() { return ChevronUp; }
+});
+/* ESM import */var _createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../createLucideIcon.js */ "./node_modules/lucide-react/dist/esm/createLucideIcon.js");
+/**
+ * @license lucide-react v0.562.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+
+const __iconNode = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"])("chevron-up", __iconNode);
+
+
+//# sourceMappingURL=chevron-up.js.map
+
+
+}),
 "./node_modules/lucide-react/dist/esm/icons/download.js": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -3296,6 +3561,39 @@ const Download = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"]
 
 
 //# sourceMappingURL=download.js.map
+
+
+}),
+"./node_modules/lucide-react/dist/esm/icons/funnel.js": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  __iconNode: function() { return __iconNode; },
+  "default": function() { return Funnel; }
+});
+/* ESM import */var _createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../createLucideIcon.js */ "./node_modules/lucide-react/dist/esm/createLucideIcon.js");
+/**
+ * @license lucide-react v0.562.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+
+const __iconNode = [
+  [
+    "path",
+    {
+      d: "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",
+      key: "sc7q7i"
+    }
+  ]
+];
+const Funnel = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"])("funnel", __iconNode);
+
+
+//# sourceMappingURL=funnel.js.map
 
 
 }),
@@ -3423,6 +3721,35 @@ const MapPin = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"])(
 
 
 //# sourceMappingURL=map-pin.js.map
+
+
+}),
+"./node_modules/lucide-react/dist/esm/icons/menu.js": (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  __iconNode: function() { return __iconNode; },
+  "default": function() { return Menu; }
+});
+/* ESM import */var _createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../createLucideIcon.js */ "./node_modules/lucide-react/dist/esm/createLucideIcon.js");
+/**
+ * @license lucide-react v0.562.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+
+const __iconNode = [
+  ["path", { d: "M4 5h16", key: "1tepv9" }],
+  ["path", { d: "M4 12h16", key: "1lakjw" }],
+  ["path", { d: "M4 19h16", key: "1djgab" }]
+];
+const Menu = (0,_createLucideIcon_js__WEBPACK_IMPORTED_MODULE_0__["default"])("menu", __iconNode);
+
+
+//# sourceMappingURL=menu.js.map
 
 
 }),
