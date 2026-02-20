@@ -2,6 +2,14 @@
 
 This is a standalone, client-only microfrontend for trip planning. It is developed independently and can be integrated into the main application host using **Module Federation** or as a native ESM module.
 
+## Live Demo
+
+[https://freefri.github.io/Travel-planner/](https://freefri.github.io/Travel-planner/)
+
+## Repository Summary
+
+This repository contains a standalone microfrontend for a travel planner application. It allows users to create, view, edit, and delete travel places, organize them by day, and search/filter through their planned destinations. It also supports importing and exporting travel data in KMZ/KML formats, and enriches place information with geographical and contextual data. It is designed to be integrated into a larger host application using Module Federation or as a native ESM module. The project emphasizes modern web development practices, including React 19, Tailwind CSS 4, Rspack for bundling, and TypeScript for type safety. It also includes comprehensive end-to-end testing with Playwright and adheres to specific UI design and component naming conventions to facilitate microfrontend integration and maintainability.
+
 ## Tech Stack
 
 - **React 19**: Modern UI library for the web.
