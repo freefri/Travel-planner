@@ -1,6 +1,6 @@
-# MF Tutor Microfrontend
+# Travel Planner
 
-This is a standalone, client-only microfrontend for the Chat/Tutor feature. It is developed independently and can be integrated into the main application host using **Module Federation** or as a native ESM module.
+This is a standalone, client-only microfrontend for trip planning. It is developed independently and can be integrated into the main application host using **Module Federation** or as a native ESM module.
 
 ## Tech Stack
 
@@ -9,7 +9,6 @@ This is a standalone, client-only microfrontend for the Chat/Tutor feature. It i
 - **Rspack**: High-performance Rust-based bundler.
 - **Module Federation**: Webpack Module Federation for dynamic component sharing.
 - **TypeScript**: Static typing for Javascript (Never use `any` as type).
-- **Shadcn Chatbot Kit**: UI components for chat interface.
 
 ## Getting Started
 
@@ -95,22 +94,6 @@ The microfrontend uses **Webpack Module Federation** via `@module-federation/enh
 **External Dependencies:**
 React and React DOM are externalized as `window` globals and should be provided by the host application.
 
-**Host Integration Example:**
-
-```javascript
-// In your host application's Module Federation config
-remotes: {
-  mf_tutor: 'mf_tutor@http://localhost:3010/remoteEntry.js'
-}
-
-// Usage in host app
-import { Chat } from 'mf_tutor/Renderer';
-
-function App() {
-  return <Chat />;
-}
-```
-
 ### 2. Native ESM Module (Legacy)
 
 For development or standalone usage, the microfrontend can also be built as a native ESM module using `rspack.config.cjs`.
@@ -123,7 +106,7 @@ For development or standalone usage, the microfrontend can also be built as a na
 
 ## UI Design Guidelines
 
-The design follows the **Shadcn Chatbot Kit** design system with Tailwind CSS 4.
+The design with Tailwind CSS 4.
 
 - **Design Tokens**: Available in `src/styles/global.css`
 - **Component Library**: Shadcn-based components in `src/components/ui/`
@@ -165,7 +148,7 @@ To maintain a clean and sustainable codebase, all developers (and AI agents) mus
 ```
 mf_tutor/
 ├── src/
-│   ├── Chat.tsx              # Main chat component
+│   ├── Travel.tsx              # Main component
 │   ├── Renderer.tsx          # Module Federation export
 │   ├── bootstrap.tsx         # Application bootstrap
 │   ├── components/
