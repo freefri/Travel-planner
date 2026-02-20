@@ -29,6 +29,44 @@ export async function parseKMZ(file: Blob | File): Promise<KMZData> {
   return parseKML(xmlDoc);
 }
 
+export function extractDuckDuckGoImageFromDescription(place: Place) {
+  if (place.description && place.description.includes('<img src="https://')) {
+    const imgMatch = place.description.match(/<img src="(https:\/\/[^"]+)"[^>]*>/);
+    if (imgMatch) {
+      place.ddgImage = imgMatch[1];
+      // Remove the image tag from the visual description
+      place.description = place.description.replace(/<img src="https:\/\/[^"]+"[^>]*>/, '').trim();
+    }
+  }
+  return place
+}
+
+function parseSinglePlace(placemark: Element, index: number): Place {
+  const nameNode = placemark.querySelector('name');
+  const name = nameNode?.textContent || 'Unnamed Place';
+  let description = placemark.querySelector('description')?.textContent || undefined;
+
+  const styleUrl = placemark.querySelector('styleUrl')?.textContent || undefined;
+  const timestamp = placemark.querySelector('TimeStamp > when')?.textContent || undefined;
+
+  const coordString = placemark.querySelector('Point > coordinates')?.textContent?.trim() || '';
+  const coordinates = parseCoordinates(coordString);
+
+  const extendedData = parseExtendedData(placemark.querySelector('ExtendedData'));
+
+  const toRet: Place = {
+    id: `place-${index}-${Date.now()}`,
+    name,
+    description,
+    timestamp,
+    styleUrl,
+    coordinates,
+    extendedData
+  }
+
+  return extractDuckDuckGoImageFromDescription(toRet)
+}
+
 function parseKML(xmlDoc: Document): KMZData {
   const documentNode = xmlDoc.getElementsByTagName('Document')[0];
   if (!documentNode) {
@@ -43,28 +81,7 @@ function parseKML(xmlDoc: Document): KMZData {
     globalExtendedData?.querySelector('lastModified')?.textContent || undefined;
 
   const placemarks = xmlDoc.querySelectorAll('Placemark');
-  const places: Place[] = Array.from(placemarks).map((pm, index) => {
-    const nameNode = pm.querySelector('name');
-    const name = nameNode?.textContent || 'Unnamed Place';
-    const description = pm.querySelector('description')?.textContent || undefined;
-    const styleUrl = pm.querySelector('styleUrl')?.textContent || undefined;
-    const timestamp = pm.querySelector('TimeStamp > when')?.textContent || undefined;
-
-    const coordString = pm.querySelector('Point > coordinates')?.textContent?.trim() || '';
-    const coordinates = parseCoordinates(coordString);
-
-    const extendedData = parseExtendedData(pm.querySelector('ExtendedData'));
-
-    return {
-      id: `place-${index}-${Date.now()}`,
-      name,
-      description,
-      timestamp,
-      styleUrl,
-      coordinates,
-      extendedData
-    };
-  });
+  const places: Place[] = Array.from(placemarks).map(parseSinglePlace);
 
   return {
     name,
@@ -147,8 +164,12 @@ function generateKML(data: KMZData): string {
   data.places.forEach(place => {
     content += '  <Placemark>\n';
     content += `    <name>${escapeXML(place.name)}</name>\n`;
-    if (place.description) {
-      content += `    <description>${escapeXML(place.description)}</description>\n`;
+    if (place.description || place.ddgImage) {
+      let desc = place.description || '';
+      if (place.ddgImage) {
+        desc += (desc ? '\n' : '') + `<img src="${place.ddgImage}" style="max-width:300px; display:block; margin: 10px 0;">`;
+      }
+      content += `    <description>${escapeXML(desc)}</description>\n`;
     }
     if (place.timestamp) {
       content += `    <TimeStamp><when>${place.timestamp}</when></TimeStamp>\n`;

@@ -58,8 +58,9 @@ export const getSafeSeed = (name: string, fallback: string = 'random'): string =
 
 export const getPlaceholderImage = (name: string, id?: string, ddgImage?: string, width: number = 400, height: number = 200): string => {
   if (ddgImage) return ddgImage;
-  const seed = getSafeSeed(name, id || 'random');
-  return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+  return ''
+  // const seed = getSafeSeed(name, id || 'random');
+  // return `https://picsum.photos/seed/${seed}/${width}/${height}`;
 };
 
 export const fetchDuckDuckGoData = async (name: string): Promise<{ abstract?: string, image?: string } | null> => {

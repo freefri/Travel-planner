@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Place, KMZData } from './types/travel';
-import { parseKMZ, exportKMZ } from './lib/kmz-parser';
+import { parseKMZ, exportKMZ, extractDuckDuckGoImageFromDescription } from './lib/kmz-parser';
 import { syncPlaceName, fetchDuckDuckGoData } from './lib/place-utils';
 import { TravelGrid } from './components/TravelGrid';
 import { TravelHeader } from './components/TravelHeader';
@@ -24,8 +24,9 @@ export const Travel = () => {
     const samplePlace: Place = {
       id: 'sample-1',
       name: 'Pura Tanah Lot',
-      description: 'Tanah Lot es una formación rocosa junto a la costa sur de la isla de Bali. La roca es conocida por el pura (templo hindú balinés) allí existente, llamado Pura Tanah Lot (literalmente Templo de Tanah Lot), un lugar de peregrinación que también es muy popular entre los turistas y una de las imágenes icónicas de Bali. &lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bali_-_Pura_Tanah_Lot%2C_20220827_1005_1141.jpg/330px-Bali_-_Pura_Tanah_Lot%2C_20220827_1005_1141.jpg&quot; style=&quot;max-width:300px; display:block; margin: 10px 0;&quot;&gt;',
+      description: 'Un templo icónico en un islote rocoso. <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Bali_-_Pura_Tanah_Lot%2C_20220827_1005_1141.jpg/330px-Bali_-_Pura_Tanah_Lot%2C_20220827_1005_1141.jpg" style="max-width:300px; display:block; margin: 10px 0;">',
       timestamp: new Date(Date.UTC(2026, 1, 19, 8, 20, 30)).toISOString(),
+      styleUrl: 'placemark-purple',
       coordinates: { lat: -8.6212, lng: 115.0868 },
       extendedData: {
         featureTypes: ['tourism-attraction'],
@@ -53,12 +54,16 @@ export const Travel = () => {
       });
 
       // Fetch sequentially to avoid overwhelming the API
-      for (const place of placesToSearch) {
-        const data = await fetchDuckDuckGoData(place.name);
+      for (let place of placesToSearch) {
+        place = extractDuckDuckGoImageFromDescription(place)
+        let data
+        if (!place.description || !place.ddgImage) {
+          data = await fetchDuckDuckGoData(place.name);
+        }
         if (data) {
           setPlaces(prev => prev.map(p => p.id === place.id ? {
             ...p,
-            description: p.description || data.abstract || p.description,
+            description: p.description || data.abstract || 'no-info-retrieved',
             ddgImage: data.image || p.ddgImage
           } : p));
         }
