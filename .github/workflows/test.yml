@@ -28,5 +28,14 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run tests
-        run: npm run test
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+
+      - name: Run type check
+        run: npm run type-check
+
+      - name: Run predeploy
+        run: npm run predeploy
