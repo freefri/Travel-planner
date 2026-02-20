@@ -17,12 +17,7 @@ Follow these steps to set up and run the project locally.
 
 ### 1. Prerequisites
 
-- **Node.js**: We recommend using the version specified in `.nvmrc` (v22.16.0).
-- **nvm**: If you have [nvm](https://github.com/nvm-sh/nvm) installed, just run:
-
-  ```bash
-  nvm use
-  ```
+- **Node.js**: v22.16.0 (see `.nvmrc`). Install via [nvm](https://github.com/nvm-sh/nvm).
 
 ### 2. Installation
 
@@ -37,6 +32,7 @@ npm run setup
 Run the development server with Hot Module Replacement (HMR):
 
 ```bash
+nvm use
 npm run dev
 ```
 
@@ -135,6 +131,34 @@ The design follows the **Shadcn Chatbot Kit** design system with Tailwind CSS 4.
 - **Theme**: Supports light/dark mode via CSS variables
 - **`public/tailwind.css`** is auto-generated — never edit it directly; edit `src/styles/global.css` instead
 - **Path alias**: `@` resolves to `src/`
+
+### Component Naming Convention
+
+To ensure easier debugging within a microfrontend environment and maintain reliable end-to-end (E2E) testing, all components must follow these conventions:
+
+#### Root Element Class (`mf-`)
+
+- The **root element** of every component must have a class name starting with `mf-` followed by the kebab-case name of the component.
+- Example: `mf-travel-header`, `mf-edit-place-modal`, `mf-travel-card`.
+- Purpose: This ensures consistent styling and easier debugging in a microfrontend environment.
+
+#### E2E Test Class (`e2e-`)
+
+- For E2E testing, any element that will be interacted with (clicked, typed into, etc.) must have a **dedicated class starting with `e2e-`** followed by a descriptive name.
+- Example: `e2e-submit-button`, `e2e-place-input`, `e2e-travel-card-delete`.
+- **Do not use Tailwind classes for E2E selectors**, as these can change during builds and break tests.
+- Purpose: Ensures stable and maintainable E2E tests that are decoupled from styling.
+
+### Development Philosophy & Refactoring
+
+To maintain a clean and sustainable codebase, all developers (and AI agents) must adhere to the following principles:
+
+- **Logic Extraction**: If a component's logic grows too large or complex (e.g., complex data grouping, heavy rendering calculations, or large conditional blocks), it **must** be extracted into its own dedicated component.
+  - *Example: `TravelGrid` was extracted from `Travel.tsx` to handle day-based grouping logic.*
+- **Single Responsibility**: Each component should ideally do one thing. If you find yourself adding descriptive comments for "blocks" of rendering logic within a component, that's a strong signal to refactor.
+- **Proactive Refactoring**: Do not wait for a specific "refactoring task." Every feature update or change is an opportunity to improve the structure and readability of the surrounding code.
+- **Logic Isolation**: Keep data processing logic (like `useMemo` hooks for sorting/filtering) or external API templates (like image placeholder URLs) distinct from the JSX structure.
+  - *Example: `getPlaceholderImage` utility was extracted to `src/lib/place-utils.ts` to keep `TravelCard` and `EditPlaceModal` clean.*
 
 ## Project Structure
 
