@@ -56,8 +56,8 @@ export const getSafeSeed = (name: string, fallback: string = 'random'): string =
   }
 };
 
-export const getPlaceholderImage = (name: string, id?: string, ddgImage?: string, width: number = 400, height: number = 200): string => {
-  if (ddgImage) return ddgImage;
+export const getPlaceholderImage = (place: Place): string => {
+  if (place.ddgImage) return place.ddgImage;
   return ''
   // const seed = getSafeSeed(name, id || 'random');
   // return `https://picsum.photos/seed/${seed}/${width}/${height}`;

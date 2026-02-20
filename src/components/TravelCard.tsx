@@ -15,7 +15,7 @@ export const TravelCard: React.FC<TravelCardProps> = ({ place, isSelected, onCli
     const styleColor = getColorFromStyle(place.styleUrl);
 
     // Use custom image or deterministic "random" image from picsum
-    const bgImage = place.imageUrl || getPlaceholderImage(place.name, place.id, place.ddgImage, 400, 200);
+    const bgImage = place.imageUrl || getPlaceholderImage(place);
 
     return (
         <div

@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { KMZData, Place, Coordinates, ExtendedData, MWMLang } from '../types/travel';
+import { formatPlaceName } from './place-utils';
 
 const MWM_NS = 'https://omaps.app';
 
@@ -162,8 +163,9 @@ function generateKML(data: KMZData): string {
   }
 
   data.places.forEach(place => {
+    const formattedName = formatPlaceName(place.name, place.timestamp, place.extendedData?.icon);
     content += '  <Placemark>\n';
-    content += `    <name>${escapeXML(place.name)}</name>\n`;
+    content += `    <name>${escapeXML(formattedName)}</name>\n`;
     if (place.description || place.ddgImage) {
       let desc = place.description || '';
       if (place.ddgImage) {
@@ -196,7 +198,9 @@ function generateKML(data: KMZData): string {
 
       content += writeLangs('name', ed.name);
       content += writeLangs('description', ed.description);
-      content += writeLangs('customName', ed.customName);
+
+      const formattedName = formatPlaceName(place.name, place.timestamp, place.extendedData?.icon);
+      content += writeLangs('customName', [{ code: 'default', value: formattedName }]);
 
       if (ed.featureTypes && ed.featureTypes.length > 0) {
         content += '      <mwm:featureTypes>\n';

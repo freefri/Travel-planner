@@ -114,7 +114,7 @@ export const EditPlaceModal: React.FC<EditPlaceModalProps> = ({
 
   const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${place.coordinates.lat},${place.coordinates.lng}`;
 
-  const currentImg = editForm.imageUrl ?? place.imageUrl ?? getPlaceholderImage(place.name, place.id, editForm.ddgImage ?? place.ddgImage, 800, 400);
+  const currentImg = editForm.imageUrl ?? place.imageUrl ?? getPlaceholderImage(place);
 
   const currentFeatureType = editForm.extendedData?.featureTypes?.[0] ?? place.extendedData?.featureTypes?.[0] ?? '';
 

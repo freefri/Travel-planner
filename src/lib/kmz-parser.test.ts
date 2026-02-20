@@ -123,5 +123,37 @@ describe('kmz-parser', () => {
       expect(kmlText).toContain('Special &amp; Characters');
       expect(kmlText).toContain('Bread &amp; Butter');
     });
+
+    it('should ensure Placemark.name and mwm:customName are identical and follow the DDDD. HH.MM format', async () => {
+      const timestamp = '2026-02-08T17:46:34Z';
+      const data: KMZData = {
+        name: 'Format Trip',
+        places: [{
+          id: '1',
+          name: 'Waisai',
+          timestamp: timestamp,
+          coordinates: { lat: -0.4, lng: 130.8 },
+          extendedData: { icon: 'Transport' }
+        }]
+      };
+
+      const blob = await exportKMZ(data);
+      const zip = await JSZip.loadAsync(blob);
+      const kmlText = await zip.file('doc.kml')!.async('text');
+
+      // Calculate expected name based on local time to avoid timezone issues in tests
+      const date = new Date(timestamp);
+      const hh = date.getHours().toString().padStart(2, '0');
+      const mm = date.getMinutes().toString().padStart(2, '0');
+      const expectedName = `1. ${hh}:${mm} 🚌 Waisai`;
+
+      // Check Placemark name
+      expect(kmlText).toContain(`<name>${expectedName}</name>`);
+
+      // Check mwm:customName
+      expect(kmlText).toContain(`<mwm:customName>`);
+      expect(kmlText).toContain(`<mwm:lang code="default">${expectedName}</mwm:lang>`);
+      expect(kmlText).toContain(`</mwm:customName>`);
+    });
   });
 });
