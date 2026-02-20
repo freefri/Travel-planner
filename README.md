@@ -171,6 +171,23 @@ Copy the contents of the `dist/` directory to your hosting provider. The essenti
 - `travel.js`: The application logic (bundled with React).
 - `tailwind.css`: The compiled styles.
 
+#### **GitHub Pages Deployment:**
+
+The repository is configured to deploy to GitHub Pages using the `gh-pages` package.
+
+1. **Ensure Node.js version**: Use Node 18+ (verified with `nvm use`).
+2. **Run Deploy**:
+
+    ```bash
+    npm run deploy
+    ```
+
+This command will:
+
+- Set `NODE_ENV=production` to ensure the `publicPath` is set to `/Travel-planner/`.
+- Build the project (`npm run build`).
+- Push the `dist/` folder to the `gh-pages` branch on the `travel` remote.
+
 #### **AWS S3 Deployment Tip:**
 
 - Enable **Static Website Hosting** on your bucket.

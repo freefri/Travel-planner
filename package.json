@@ -7,7 +7,7 @@
         "dev": "concurrently --names \"client,tailwind\" \"rspack serve\" \"npm run build:tailwind -- --watch\"",
         "build": "npm run build:tailwind && npm run build:standalone",
         "predeploy": "NODE_ENV=production npm run build",
-        "deploy": "gh-pages -d dist -o travel",
+        "deploy": "npm run predeploy && gh-pages -d dist -o travel",
         "build:client": "rspack build --mode production --config rspack_prod.config.cjs",
         "build:standalone": "rspack build --config rspack.config.cjs && cp public/tailwind.css dist/",
         "build:tailwind": "npx @tailwindcss/cli -i ./src/styles/global.css -o ./public/tailwind.css",
