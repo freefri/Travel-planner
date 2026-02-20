@@ -51,7 +51,7 @@ describe('kmz-parser', () => {
       const place = data.places[0];
       expect(place.name).toBe('17. 18:46 🚌 Waisai');
       expect(place.description).toBe('Waisai is a town in the south of the island of Waigeo.');
-      expect(place.ddgImage).toBe('https://duckduckgo.com/i/waisai.jpg');
+      expect(place.imageUrl).toBe('https://duckduckgo.com/i/waisai.jpg');
       expect(place.coordinates).toEqual({ lng: 130.80279, lat: -0.43252758, alt: 0 });
       expect(place.extendedData?.icon).toBe('Transport');
     });
@@ -84,7 +84,7 @@ describe('kmz-parser', () => {
           id: '1',
           name: 'Bali',
           description: 'Island of Gods',
-          ddgImage: 'https://duckduckgo.com/bali.jpg',
+          imageUrl: 'https://duckduckgo.com/bali.jpg',
           coordinates: { lat: -8, lng: 115 },
           extendedData: { icon: 'Nature' }
         }]

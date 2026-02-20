@@ -41,7 +41,7 @@ export const Travel = () => {
   useEffect(() => {
     const enrichMissingData = async () => {
       const placesToSearch = places.filter(p =>
-        !searchedIds.has(p.id) && (!p.description || !p.ddgImage)
+        !searchedIds.has(p.id) && (!p.description || !p.imageUrl)
       );
 
       if (placesToSearch.length === 0) return;
@@ -57,14 +57,14 @@ export const Travel = () => {
       for (let place of placesToSearch) {
         place = extractDuckDuckGoImageFromDescription(place)
         let data
-        if (!place.description || !place.ddgImage) {
+        if (!place.description || !place.imageUrl) {
           data = await fetchDuckDuckGoData(place.name);
         }
         if (data) {
           setPlaces(prev => prev.map(p => p.id === place.id ? {
             ...p,
             description: p.description || data.abstract || 'no-info-retrieved',
-            ddgImage: data.image || p.ddgImage
+            imageUrl: data.image || p.imageUrl
           } : p));
         }
       }

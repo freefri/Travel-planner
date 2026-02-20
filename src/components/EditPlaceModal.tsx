@@ -114,19 +114,21 @@ export const EditPlaceModal: React.FC<EditPlaceModalProps> = ({
 
   const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${place.coordinates.lat},${place.coordinates.lng}`;
 
-  const currentImg = editForm.imageUrl ?? place.imageUrl ?? getPlaceholderImage(place);
+  const bgImage = editForm.imageUrl ?? getPlaceholderImage(place);
 
   const currentFeatureType = editForm.extendedData?.featureTypes?.[0] ?? place.extendedData?.featureTypes?.[0] ?? '';
 
   return (
     <div className="mf-edit-place-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border animate-in zoom-in-95 duration-300">
-        <div className="relative h-64">
-          <img
-            src={currentImg}
-            alt={place.name}
-            className="w-full h-full object-cover bg-gray-600"
-          />
+        <div className="relative h-64 bg-gray-600">
+          {bgImage && (
+            <img
+              src={bgImage}
+              alt={place.name}
+              className="w-full h-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
           <button
             onClick={onClose}
@@ -152,7 +154,7 @@ export const EditPlaceModal: React.FC<EditPlaceModalProps> = ({
               </div>
             ) : (
               <>
-                <h4 className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">
                   {place.extendedData?.featureTypes?.[0] || 'Destination'}
                 </h4>
                 <h2 className="text-3xl font-bold">{place.name}</h2>

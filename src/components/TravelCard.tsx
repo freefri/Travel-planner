@@ -28,19 +28,19 @@ export const TravelCard: React.FC<TravelCardProps> = ({ place, isSelected, onCli
         >
             <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110 bg-gray-600"
-                style={{ backgroundImage: `url(${bgImage})` }}
+                style={bgImage ? { backgroundImage: `url(${bgImage})` } : {}}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
             <div className="relative h-48 p-4 flex flex-col justify-end text-white">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 group-hover:opacity-40 transition-opacity">
                     <MapPin className="w-4 h-4 text-primary bg-opacity-50 bg-white rounded" style={{ color: styleColor || '#ccc' }} />
                     <span className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/80">
                         {place.extendedData?.featureTypes?.[0] || 'Point of Interest'}
                     </span>
                 </div>
 
-                <h3 className="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
+                <h3 className="text-xl font-bold leading-tight mb-2 group-hover:opacity-75 transition-opacity">
                     {place.name}
                 </h3>
 

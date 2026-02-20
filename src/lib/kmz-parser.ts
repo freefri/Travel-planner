@@ -34,7 +34,9 @@ export function extractDuckDuckGoImageFromDescription(place: Place) {
   if (place.description && place.description.includes('<img src="https://')) {
     const imgMatch = place.description.match(/<img src="(https:\/\/[^"]+)"[^>]*>/);
     if (imgMatch) {
-      place.ddgImage = imgMatch[1];
+      if (!place.imageUrl) {
+        place.imageUrl = imgMatch[1];
+      }
       // Remove the image tag from the visual description
       place.description = place.description.replace(/<img src="https:\/\/[^"]+"[^>]*>/, '').trim();
     }
@@ -166,10 +168,10 @@ function generateKML(data: KMZData): string {
     const formattedName = formatPlaceName(place.name, place.timestamp, place.extendedData?.icon);
     content += '  <Placemark>\n';
     content += `    <name>${escapeXML(formattedName)}</name>\n`;
-    if (place.description || place.ddgImage) {
+    if (place.description || place.imageUrl) {
       let desc = place.description || '';
-      if (place.ddgImage) {
-        desc += (desc ? '\n' : '') + `<img src="${place.ddgImage}" style="max-width:300px; display:block; margin: 10px 0;">`;
+      if (place.imageUrl) {
+        desc += (desc ? '\n' : '') + `<img src="${place.imageUrl}" style="max-width:300px; display:block; margin: 10px 0;">`;
       }
       content += `    <description>${escapeXML(desc)}</description>\n`;
     }

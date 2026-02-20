@@ -28,7 +28,6 @@ export interface Place {
     timestamp?: string; // ISO string from <when>
     styleUrl?: string;
     imageUrl?: string;
-    ddgImage?: string;
     coordinates: Coordinates;
     extendedData?: ExtendedData;
 }
