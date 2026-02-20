@@ -373,6 +373,44 @@ var Travel = function Travel() {
       return _objectSpread(_objectSpread({}, prev), updates);
     });
   };
+  var handleCreateNew = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    var newId = "place-".concat(Date.now());
+    var lastPlace = places[places.length - 1];
+    var newCoords = lastPlace ? _objectSpread({}, lastPlace.coordinates) : {
+      lat: 0,
+      lng: 0
+    };
+    var newPlace = {
+      id: newId,
+      name: 'New Place',
+      timestamp: new Date().toISOString(),
+      coordinates: newCoords,
+      extendedData: {
+        featureTypes: [],
+        icon: _lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.ICON_OPTIONS["0"] || 'Sights',
+        visibility: true
+      },
+      styleUrl: 'placemark-blue'
+    };
+    setPlaces(function (prev) {
+      var updated = [].concat(_toConsumableArray(prev), [newPlace]);
+      var earliest = updated.reduce(function (acc, p) {
+        if (!p.timestamp) return acc;
+        var t = new Date(p.timestamp).getTime();
+        return t < acc ? t : acc;
+      }, Infinity);
+      var tripStart = earliest === Infinity ? undefined : new Date(earliest).toISOString();
+      return updated.map(function (p) {
+        return (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.syncPlaceName)(p, tripStart);
+      });
+    });
+    handlePlaceSelect(newId);
+    // Use the synced name for the edit form
+    var tripStart = tripStartDate; // already calculated via useMemo
+    var syncedPlace = (0,_lib_place_utils__WEBPACK_IMPORTED_MODULE_2__.syncPlaceName)(newPlace, tripStart);
+    setEditForm(syncedPlace);
+    setIsEditing(true);
+  }, [places, tripStartDate, handlePlaceSelect]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
     className: "mf-travel flex min-h-screen w-full flex-col bg-background text-foreground",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_TravelHeader__WEBPACK_IMPORTED_MODULE_4__.TravelHeader, {
@@ -386,6 +424,7 @@ var Travel = function Travel() {
       onImport: handleFileImport,
       onExport: handleExport,
       onRemoveAll: handleRemoveAll,
+      onCreateNew: handleCreateNew,
       isImporting: isImporting,
       hasPlaces: places.length > 0
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("main", {
@@ -400,6 +439,23 @@ var Travel = function Travel() {
       totalCount: places.length,
       visibleCount: filteredPlaces.length,
       isImporting: isImporting
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      className: "px-6 text-xs",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("p", {
+        className: "text-muted-foreground",
+        children: ["This app helps you create, view, edit, and organize your travel places with ease. Group destinations by day, search and filter your plans, and keep everything neatly structured in one place. It\u2019s designed to work hand-in-hand with ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
+          className: "text-xs text-primary hover:underline",
+          href: "https://organicmaps.app",
+          children: "\uD83E\uDDED Organic Maps"
+        }), ", letting you import and export your trips in KMZ/KML formats. You can also enrich your saved places with extra geographical and contextual details right from your web browser."]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("p", {
+        className: "text-muted-foreground mt-2",
+        children: ["1\uFE0F\u20E3 Start by creating lots of bookmarks in ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
+          className: "text-xs text-primary hover:underline",
+          href: "https://organicmaps.app",
+          children: "\uD83E\uDDED Organic Maps"
+        }), " and export them as a KMZ file. 2\uFE0F\u20E3 Import that file into the app to organize, refine, and enhance your trip nicely. 3\uFE0F\u20E3 When you\u2019re done, export the KMZ back into Organic Maps and enjoy a fully planned, offline-ready adventure \uD83D\uDEB6\u200D\u2640\uFE0F\uD83D\uDDFA\uFE0F"]
+      })]
     }), selectedPlace && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_components_EditPlaceModal__WEBPACK_IMPORTED_MODULE_5__.EditPlaceModal, {
       place: selectedPlace,
       isEditing: isEditing,
@@ -1141,9 +1197,10 @@ __webpack_require__.d(__webpack_exports__, {
 /* ESM import */var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/x.js");
 /* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/menu.js");
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/import.js");
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/download.js");
-/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/trash-2.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/map-pin.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/import.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/download.js");
+/* ESM import */var lucide_react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lucide-react */ "./node_modules/lucide-react/dist/esm/icons/trash-2.js");
 /* ESM import */var _ui_button__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui/button */ "./src/components/ui/button.tsx");
 /* ESM import */var _lib_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/utils */ "./src/lib/utils.ts");
 /* ESM import */var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
@@ -1162,6 +1219,7 @@ var TravelActions = function TravelActions(_ref) {
   var onImport = _ref.onImport,
     onExport = _ref.onExport,
     onRemoveAll = _ref.onRemoveAll,
+    onCreateNew = _ref.onCreateNew,
     isImporting = _ref.isImporting,
     hasPlaces = _ref.hasPlaces;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
@@ -1204,7 +1262,19 @@ var TravelActions = function TravelActions(_ref) {
       className: "absolute right-0 mt-2 w-56 bg-card border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "p-2 space-y-1 bg-white",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("label", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+          onClick: function onClick() {
+            return handleAction(onCreateNew);
+          },
+          className: "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted rounded-lg transition-colors",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            className: "w-4 h-4 text-primary"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            children: "Create New Place"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "h-px bg-border my-1"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("label", {
           className: "flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted rounded-lg cursor-pointer transition-colors",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
             type: "file",
@@ -1215,7 +1285,7 @@ var TravelActions = function TravelActions(_ref) {
               setIsOpen(false);
             },
             disabled: isImporting
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
             className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_2__.cn)("w-4 h-4 text-primary", isImporting && "animate-pulse")
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
             children: isImporting ? 'Importing...' : 'Import KMZ/KML'
@@ -1226,7 +1296,7 @@ var TravelActions = function TravelActions(_ref) {
           },
           disabled: !hasPlaces,
           className: "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_8__["default"], {
             className: "w-4 h-4 text-primary"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
             children: "Export KMZ"
@@ -1241,7 +1311,7 @@ var TravelActions = function TravelActions(_ref) {
           },
           disabled: !hasPlaces,
           className: "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_8__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(lucide_react__WEBPACK_IMPORTED_MODULE_9__["default"], {
             className: "w-4 h-4"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
             children: "Remove All Places"
@@ -1484,6 +1554,7 @@ var TravelHeader = function TravelHeader(_ref) {
     onImport = _ref.onImport,
     onExport = _ref.onExport,
     onRemoveAll = _ref.onRemoveAll,
+    onCreateNew = _ref.onCreateNew,
     isImporting = _ref.isImporting,
     hasPlaces = _ref.hasPlaces,
     dateFilter = _ref.dateFilter,
@@ -1539,6 +1610,7 @@ var TravelHeader = function TravelHeader(_ref) {
           onImport: onImport,
           onExport: onExport,
           onRemoveAll: onRemoveAll,
+          onCreateNew: onCreateNew,
           isImporting: isImporting,
           hasPlaces: hasPlaces
         })
