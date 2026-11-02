@@ -6,7 +6,7 @@
     "eyebrow": "Cuaderno de viaje",
     "title": "Viaje\nde ejemplo",
     "subtitle": "Dos paradas para probar la vista previa.",
-    "image": "https://example.com/portada.jpg",
+    "image": "https://archaeologicalpaths.com/web/images/uploaded/shutterstock_1183948168.jpg",
     "pills": ["3 días · 2 noches"]
   },
   "sections": [
@@ -32,9 +32,9 @@
           "bullets": ["Museo", "Mercado"],
           "tags": ["1 noche"],
           "photos": [
-            { "src": "https://example.com/b1.jpg", "alt": "Plaza", "title": "Plaza", "caption": "Centro histórico · Fuente 1", "href": "https://example.com/b1" },
-            { "src": "https://example.com/b2.jpg", "alt": "Museo", "title": "Museo", "caption": "Fuente 2", "href": "https://example.com/b2" },
-            { "src": "https://example.com/b3.jpg", "alt": "Mercado", "title": "Mercado", "caption": "Fuente 3" }
+            { "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Templo_de_Luxor%2C_Luxor%2C_Egipto%2C_2022-04-01%2C_DD_02.jpg/1280px-Templo_de_Luxor%2C_Luxor%2C_Egipto%2C_2022-04-01%2C_DD_02.jpg", "alt": "Templo", "title": "Templo", "caption": "Centro histórico · Fuente 1", "href": "https://commons.wikimedia.org/wiki/File:Templo_de_Luxor,_Luxor,_Egipto,_2022-04-01,_DD_02.jpg" },
+            { "src": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Karnak_First_Pylon_R01.jpg", "alt": "Avenida de esfinges", "title": "Avenida", "caption": "Fuente 2", "href": "https://commons.wikimedia.org/wiki/File:Karnak_First_Pylon_R01.jpg" },
+            { "src": "https://www.dynamics-travel.com/storage/valley-of-the-kings-1771145047g39gc.jpg", "alt": "Valle", "title": "Valle", "caption": "Fuente 3" }
           ]
         },
         { "type": "callout", "title": "Aviso", "text": "Confirmar horarios antes de reservar." },
@@ -43,7 +43,7 @@
           "dates": "2–3 jun.",
           "summary": "1 noche",
           "title": "Ciudad C",
-          "photos": [{ "src": "https://example.com/c1.jpg", "alt": "Playa", "title": "Playa" }]
+          "photos": [{ "src": "https://lbcdn.airpaz.com/hotelimages/3672336/sinai-life-beach-camp-e54583a2c5092d79bf3e7ea8ea05eaa2.jpg", "alt": "Playa", "title": "Playa" }]
         },
         { "type": "note", "text": "Los horarios son aproximados." }
       ]
