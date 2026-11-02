@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freefri.github.io/Travel-planner/preview/schema.json",
+  "title": "Trip preview",
+  "description": "A trip shown by https://freefri.github.io/Travel-planner/preview/#data:<data>, where <data> is the UTF-8 bytes of this JSON encoded as base64url (standard base64 with padding also works). The trip lives only in the link: nothing is uploaded and the part after # never reaches the server. Every visible word comes from this JSON. Text fields are plain text: HTML is shown as typed and the only formatting is **bold**. Leave out $schema and empty fields, since links over about 8,000 characters can get cut by chat apps.",
+  "examples": [
+    {
+      "lang": "en",
+      "hero": {
+        "title": "Weekend\nin Porto",
+        "pills": [
+          "2 days · 1 night"
+        ]
+      },
+      "sections": [
+        {
+          "id": "plan",
+          "title": "The plan",
+          "blocks": [
+            {
+              "type": "transport",
+              "rows": [
+                {
+                  "route": "Lisbon → Porto",
+                  "duration": "3 h",
+                  "note": "**25€** train"
+                }
+              ]
+            },
+            {
+              "type": "stop",
+              "dates": "Sat",
+              "title": "Porto",
+              "bullets": [
+                "Ribeira",
+                "Livraria Lello"
+              ],
+              "photos": [
+                {
+                  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Cais_da_Ribeira_in_Porto_%287%29.jpg/960px-Cais_da_Ribeira_in_Porto_%287%29.jpg",
+                  "title": "Ribeira"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "object",
+  "required": [
+    "hero",
+    "sections"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "For editors only; leave it out of the link."
+    },
+    "lang": {
+      "type": "string",
+      "description": "Language of all the text, e.g. \"es\". Write every field in the traveller's language."
+    },
+    "title": {
+      "type": "string",
+      "description": "Browser tab title. Defaults to the hero title."
+    },
+    "hero": {
+      "$ref": "#/$defs/hero"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/section"
+      }
+    },
+    "footer": {
+      "type": "string",
+      "description": "Footer text. Defaults to the hero title."
+    },
+    "labels": {
+      "$ref": "#/$defs/labels"
+    }
+  },
+  "$defs": {
+    "url": {
+      "type": "string",
+      "pattern": "^https?://",
+      "description": "An http(s) URL; anything else is not shown."
+    },
+    "texts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hero": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "eyebrow": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "description": "Use \\n for a line break."
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/$defs/url",
+          "description": "Background photo of the cover."
+        },
+        "pills": {
+          "$ref": "#/$defs/texts",
+          "description": "Short facts shown as chips, such as dates or length."
+        }
+      },
+      "description": "The cover at the top of the page."
+    },
+    "section": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "blocks"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Anchor id, used by the top menu."
+        },
+        "navLabel": {
+          "type": "string",
+          "description": "Top menu text. Defaults to the title."
+        },
+        "eyebrow": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "intro": {
+          "type": "string"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "description": "Rendered in order."
+        }
+      },
+      "description": "A titled part of the page. With two or more sections a top menu links to them."
+    },
+    "block": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "transport",
+            "callout",
+            "stop",
+            "cards",
+            "checklist",
+            "note"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/transport"
+        },
+        {
+          "$ref": "#/$defs/callout"
+        },
+        {
+          "$ref": "#/$defs/stop"
+        },
+        {
+          "$ref": "#/$defs/cards"
+        },
+        {
+          "$ref": "#/$defs/checklist"
+        },
+        {
+          "$ref": "#/$defs/note"
+        }
+      ],
+      "description": "Choose the shape with \"type\"."
+    },
+    "transport": {
+      "type": "object",
+      "required": [
+        "type",
+        "rows"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "transport"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "route"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "route": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "description": "A table of journeys; place it between the stops it connects."
+    },
+    "callout": {
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "callout"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "description": "A highlighted warning."
+    },
+    "stop": {
+      "type": "object",
+      "required": [
+        "type",
+        "title"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "stop"
+        },
+        "id": {
+          "type": "string",
+          "description": "Anchor id for linking to this stop."
+        },
+        "dates": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Shown under the dates, such as nights and region."
+        },
+        "meta": {
+          "type": "string",
+          "description": "Small line above the title, such as the day numbers."
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "bullets": {
+          "$ref": "#/$defs/texts"
+        },
+        "tags": {
+          "$ref": "#/$defs/texts"
+        },
+        "photos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/photo"
+          }
+        }
+      },
+      "description": "One place or stay, shown as a card with its photos on the side."
+    },
+    "photo": {
+      "type": "object",
+      "required": [
+        "src"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "src": {
+          "$ref": "#/$defs/url",
+          "description": "A direct image file URL (for Wikimedia Commons, an upload.wikimedia.org or thumb.wikimedia.org URL), not a page."
+        },
+        "alt": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string",
+          "description": "Small line under the title, such as the credit."
+        },
+        "href": {
+          "$ref": "#/$defs/url",
+          "description": "Opened when the photo is clicked, such as its source page."
+        }
+      }
+    },
+    "cards": {
+      "type": "object",
+      "required": [
+        "type",
+        "cards"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "cards"
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "title"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "bullets": {
+                "$ref": "#/$defs/texts"
+              }
+            }
+          }
+        }
+      },
+      "description": "Practical advice in a two-column grid."
+    },
+    "checklist": {
+      "type": "object",
+      "required": [
+        "type",
+        "items"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "checklist"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "title"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "description": "Things to confirm before the trip."
+    },
+    "note": {
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "note"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "description": "Small print such as image credits."
+    },
+    "labels": {
+      "type": "object",
+      "description": "Translations of the built-in table headers.",
+      "additionalProperties": false,
+      "properties": {
+        "transportRoute": {
+          "type": "string"
+        },
+        "transportDuration": {
+          "type": "string"
+        },
+        "transportNote": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
