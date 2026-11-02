@@ -1,0 +1,53 @@
+{
+  "$schema": "https://freefri.github.io/Travel-planner/preview/schema.json",
+  "lang": "es",
+  "title": "Viaje de ejemplo",
+  "hero": {
+    "eyebrow": "Cuaderno de viaje",
+    "title": "Viaje\nde ejemplo",
+    "subtitle": "Dos paradas para probar la vista previa.",
+    "image": "https://example.com/portada.jpg",
+    "pills": ["3 días · 2 noches"]
+  },
+  "sections": [
+    {
+      "id": "ruta",
+      "navLabel": "Itinerario",
+      "eyebrow": "Día a día",
+      "title": "El itinerario",
+      "intro": "Ruta corta entre dos ciudades.",
+      "blocks": [
+        {
+          "type": "transport",
+          "rows": [{ "route": "Ciudad A → Ciudad B", "duration": "2 h", "note": "**50€** tren directo." }]
+        },
+        {
+          "type": "stop",
+          "id": "ciudad-b",
+          "dates": "1–2 jun.",
+          "summary": "1 noche",
+          "meta": "Día 1",
+          "title": "Ciudad B",
+          "text": "Paseo por el centro.",
+          "bullets": ["Museo", "Mercado"],
+          "tags": ["1 noche"],
+          "photos": [
+            { "src": "https://example.com/b1.jpg", "alt": "Plaza", "title": "Plaza", "caption": "Centro histórico · Fuente 1", "href": "https://example.com/b1" },
+            { "src": "https://example.com/b2.jpg", "alt": "Museo", "title": "Museo", "caption": "Fuente 2", "href": "https://example.com/b2" },
+            { "src": "https://example.com/b3.jpg", "alt": "Mercado", "title": "Mercado", "caption": "Fuente 3" }
+          ]
+        },
+        { "type": "callout", "title": "Aviso", "text": "Confirmar horarios antes de reservar." },
+        {
+          "type": "stop",
+          "dates": "2–3 jun.",
+          "summary": "1 noche",
+          "title": "Ciudad C",
+          "photos": [{ "src": "https://example.com/c1.jpg", "alt": "Playa", "title": "Playa" }]
+        },
+        { "type": "note", "text": "Los horarios son aproximados." }
+      ]
+    }
+  ],
+  "footer": "Viaje de ejemplo"
+}

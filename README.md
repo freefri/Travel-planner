@@ -108,6 +108,7 @@ It is correct to ignore the following directories in `.gitignore`:
 | `npm run build:client` | Builds the client bundle using production config. |
 | `npm run build:tailwind` | Compiles Tailwind CSS. |
 | `npm run serve` | Serves the production build locally. |
+| `npm run preview:link -- <trip.json> [base-url]` | Prints a trip preview link for a trip JSON file. |
 | `npm run type-check` | Runs TypeScript type checking. |
 | `npm run test:e2e` | Runs Playwright end-to-end tests. |
 | `npm run test:e2e:report` | Serves the last Playwright HTML report. |
@@ -115,6 +116,32 @@ It is correct to ignore the following directories in `.gitignore`:
 | `npm run clean` | Removes build artifacts and `node_modules`. |
 
 *Always keep this list updated*
+
+## Trip Preview
+
+[https://freefri.github.io/Travel-planner/preview/](https://freefri.github.io/Travel-planner/preview/) renders a read-only trip page whose
+whole content travels in the URL: `/preview/#data:<base64 JSON>`. Nothing is stored on a server, so the link *is* the trip.
+The hash is never sent to GitHub Pages; only whoever holds the link can read it.
+
+```bash
+npm run preview:link -- src/preview/sample-trip.json
+# local dev server
+npm run preview:link -- src/preview/sample-trip.json http://localhost:3010/preview/
+```
+
+The payload is UTF-8 JSON encoded as base64url (standard base64, padding and percent-encoding are also accepted).
+Its JSON Schema is published at [`/preview/schema.json`](https://freefri.github.io/Travel-planner/preview/schema.json):
+add `"$schema": "https://freefri.github.io/Travel-planner/preview/schema.json"` to a trip file for editor autocompletion
+and validation (`preview:link` leaves it out of the link). The schema lives in `src/preview/trip.schema.json` and a unit
+test keeps it in step with `src/preview/types.ts`; `src/preview/sample-trip.json` is a minimal example, shown at `/preview/#data:sample`.
+
+Opening `/preview/` without data shows a guide with a sample link and step-by-step instructions written for LLMs. It is
+static HTML in `public/preview.html`, so tools that fetch the page without running JavaScript can read it too.
+
+Text fields accept `**bold**`. HTML is never rendered and only `http(s)` URLs become images or links, because anyone can
+craft a link.
+
+Both pages carry `<meta name="robots" content="noindex, nofollow">`, so search engines skip them.
 
 ## Integration Architecture
 
@@ -241,6 +268,7 @@ mf_tutor/
 │   ├── Travel.tsx              # Main component
 │   ├── Renderer.tsx          # Module Federation export
 │   ├── bootstrap.tsx         # Application bootstrap
+│   ├── preview/              # Trip preview page (/preview/), rendered from the URL hash
 │   ├── components/
 │   │   └── ui/              # Shadcn UI components
 │   ├── hooks/               # Custom React hooks
@@ -248,6 +276,7 @@ mf_tutor/
 │   └── styles/              # Global styles and Tailwind config
 ├── public/
 │   ├── index.html           # Development HTML template
+│   ├── preview.html         # Trip preview HTML template
 │   └── tailwind.css         # Compiled Tailwind CSS
 ├── rspack.config.cjs        # Development config (ESM mode)
 ├── rspack_prod.config.cjs   # Production config (Module Federation)

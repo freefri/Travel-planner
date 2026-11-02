@@ -1,8 +1,12 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CopyRspackPlugin } = require('@rspack/core')
 
 module.exports = {
-    entry: './src/bootstrap.tsx',
+    entry: {
+        travel: './src/bootstrap.tsx',
+        preview: './src/preview/bootstrap.tsx',
+    },
     mode: 'development',
     devServer: {
         port: 3010,
@@ -19,7 +23,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'travel.js',
+        filename: '[name].js',
         publicPath: process.env.NODE_ENV === 'production' ? '/Travel-planner/' : '/',
     },
     experiments: {},
@@ -40,6 +44,17 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html',
             inject: true,
+            chunks: ['travel'],
+        }),
+        // GitHub Pages serves a folder's index.html, which gives the preview its /preview/ route.
+        new HtmlWebpackPlugin({
+            template: './public/preview.html',
+            filename: 'preview/index.html',
+            inject: true,
+            chunks: ['preview'],
+        }),
+        new CopyRspackPlugin({
+            patterns: [{ from: './src/preview/trip.schema.json', to: 'preview/schema.json' }],
         }),
     ],
     // For a standalone prototype, we bundle React.

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#142d32">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Travel Planner · Preview</title>
+</head>
+
+<body>
+  <!--
+    The guide is static HTML on purpose: the trip travels in the URL fragment, which is never sent to the
+    server, so any client that fetches this page without running JavaScript (crawlers, LLM tools) gets the guide.
+  -->
+  <main id="trip-guide" class="trip-guide">
+    <h1 class="trip-section-title">Vista previa de viaje</h1>
+    <p>
+      Esta página muestra un viaje con los datos que lleva el propio enlace. Este enlace no lleva ningún viaje.
+    </p>
+    <p class="trip-guide-links">
+      <a class="e2e-guide-sample-link" href="#data:sample">Ver un viaje de ejemplo</a>
+      <a class="e2e-guide-schema-link" href="schema.json">Esquema JSON</a>
+    </p>
+
+    <section lang="en" aria-labelledby="trip-guide-llm">
+      <h2 id="trip-guide-llm">How to render a trip here</h2>
+      <ol>
+        <li>
+          Write the trip as JSON following the JSON Schema at
+          <a class="e2e-guide-schema-link" href="schema.json">https://freefri.github.io/Travel-planner/preview/schema.json</a>.
+          It explains every field and includes an example.
+        </li>
+        <li>Encode that JSON as base64url.</li>
+        <li>Share <code>https://freefri.github.io/Travel-planner/preview/#data:</code> followed by the encoded text.</li>
+      </ol>
+    </section>
+  </main>
+  <script>
+    if (location.hash.indexOf('#data:') === 0) document.getElementById('trip-guide').hidden = true;
+  </script>
+  <div id="root"></div>
+</body>
+
+</html>
