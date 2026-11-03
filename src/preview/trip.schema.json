@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://freefri.github.io/Travel-planner/preview/schema.json",
   "title": "Trip preview",
-  "description": "A trip shown by https://freefri.github.io/Travel-planner/preview/#data:<data>, where <data> is the UTF-8 bytes of this JSON encoded as base64url (standard base64 with padding also works). The trip lives only in the link: nothing is uploaded and the part after # never reaches the server. Every visible word comes from this JSON. Text fields are plain text: HTML is shown as typed and the only formatting is **bold**. Leave out $schema and empty fields, since links over about 8,000 characters can get cut by chat apps.",
+  "description": "A trip shown by https://freefri.github.io/Travel-planner/preview/#data:<data>, where <data> is the UTF-8 bytes of this JSON encoded as base64url (standard base64 with padding also works), or by https://freefri.github.io/Travel-planner/preview/#json:<json> with this JSON written directly, percent-encoded as needed. The trip lives only in the link: nothing is uploaded and the part after # never reaches the server. Every visible word comes from this JSON. Text fields are plain text: HTML is shown as typed and the only formatting is **bold**. Leave out $schema and empty fields, since links over about 8,000 characters can get cut by chat apps.",
   "examples": [
     {
       "lang": "en",

@@ -14,8 +14,14 @@ describe('tripStateFromHash', () => {
         expect(state.status === 'ready' && state.trip.hero.title).toBe('Mine');
     });
 
+    it('reads a trip written as JSON after #json:', () => {
+        const state = tripStateFromHash(`#json:${encodeURIComponent('{"hero":{"title":"Mine"},"sections":[]}')}`);
+        expect(state.status === 'ready' && state.trip.hero.title).toBe('Mine');
+    });
+
     it('reports broken data', () => {
         expect(tripStateFromHash('#data:@@').status).toBe('error');
+        expect(tripStateFromHash('#json:{').status).toBe('error');
     });
 
     it('is empty without data', () => {

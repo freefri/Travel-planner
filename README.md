@@ -120,7 +120,7 @@ It is correct to ignore the following directories in `.gitignore`:
 ## Trip Preview
 
 [https://freefri.github.io/Travel-planner/preview/](https://freefri.github.io/Travel-planner/preview/) renders a read-only trip page whose
-whole content travels in the URL: `/preview/#data:<base64 JSON>`. Nothing is stored on a server, so the link *is* the trip.
+whole content travels in the URL: `/preview/#data:<base64 JSON>`, or `/preview/#json:<JSON>` with the JSON written as is. Nothing is stored on a server, so the link *is* the trip.
 The hash is never sent to GitHub Pages; only whoever holds the link can read it.
 
 ```bash
@@ -129,7 +129,8 @@ npm run preview:link -- src/preview/sample-trip.json
 npm run preview:link -- src/preview/sample-trip.json http://localhost:3010/preview/
 ```
 
-The payload is UTF-8 JSON encoded as base64url (standard base64, padding and percent-encoding are also accepted).
+The `#data:` payload is UTF-8 JSON encoded as base64url (standard base64, padding and percent-encoding are also accepted).
+The `#json:` payload is the JSON itself, optionally percent-encoded; it is easier to write by hand but makes longer links.
 Its JSON Schema is published at [`/preview/schema.json`](https://freefri.github.io/Travel-planner/preview/schema.json):
 add `"$schema": "https://freefri.github.io/Travel-planner/preview/schema.json"` to a trip file for editor autocompletion
 and validation (`preview:link` leaves it out of the link). The schema lives in `src/preview/trip.schema.json` and a unit

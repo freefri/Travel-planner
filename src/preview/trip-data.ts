@@ -11,15 +11,30 @@ import {
     TripSection,
 } from './types';
 
-const DATA_PREFIX = '#data:';
+export type TripPayloadFormat = 'base64' | 'json';
+
+export interface TripPayload {
+    format: TripPayloadFormat;
+    value: string;
+}
+
+const PAYLOAD_PREFIXES: Record<string, TripPayloadFormat> = {
+    '#data:': 'base64',
+    '#json:': 'json',
+};
 
 export class TripDataError extends Error {
     name = 'TripDataError';
 }
 
-export const readTripPayload = (hash: string): string | null => {
-    if (!hash.startsWith(DATA_PREFIX)) return null;
-    return hash.slice(DATA_PREFIX.length) || null;
+export const readTripPayload = (hash: string): TripPayload | null => {
+    for (const [prefix, format] of Object.entries(PAYLOAD_PREFIXES)) {
+        if (hash.startsWith(prefix)) {
+            const value = hash.slice(prefix.length);
+            return value ? { format, value } : null;
+        }
+    }
+    return null;
 };
 
 export const encodeTrip = (trip: Trip): string => {
@@ -38,6 +53,21 @@ export const decodeTrip = (payload: string): Trip => {
     }
     return parseTrip(json);
 };
+
+// Browsers percent-encode spaces and quotes in the hash, but hand-written JSON may also hold a bare
+// "%" (e.g. "50%"), which is not valid percent-encoding, so the raw text is the fallback.
+export const decodeJsonTrip = (payload: string): Trip => {
+    let json: unknown;
+    try {
+        json = JSON.parse(safeDecodeURIComponent(payload));
+    } catch {
+        throw new TripDataError('The trip data is not valid JSON');
+    }
+    return parseTrip(json);
+};
+
+export const decodeTripPayload = ({ format, value }: TripPayload): Trip =>
+    format === 'json' ? decodeJsonTrip(value) : decodeTrip(value);
 
 // Links get pasted through chats and editors, so both base64 alphabets, missing padding and
 // percent-encoding are accepted.

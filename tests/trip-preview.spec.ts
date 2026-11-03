@@ -24,6 +24,14 @@ test.describe('Trip preview', () => {
         await expect(page.locator('.mf-transport-table th').first()).toHaveText('Trayecto');
     });
 
+    test('renders a trip written as plain JSON after #json:', async ({ page }) => {
+        await openPreview(page, `#json:${JSON.stringify(trip)}`);
+
+        await expect(page.locator('.mf-trip-hero-banner h1')).toHaveText('Viajede ejemplo');
+        await expect(page.locator('.e2e-stop-card')).toHaveCount(2);
+        await expect(page.locator('#trip-guide')).toBeHidden();
+    });
+
     test('#data:sample shows the bundled sample trip', async ({ page }) => {
         await openPreview(page, '#data:sample');
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { decodeTrip, parseTrip, readTripPayload, TripDataError } from './trip-data';
+import { decodeTripPayload, parseTrip, readTripPayload, TripDataError } from './trip-data';
 import sampleTrip from './sample-trip.json';
 import { Trip } from './types';
 
@@ -14,7 +14,7 @@ export const tripStateFromHash = (hash: string): TripState => {
     const payload = readTripPayload(hash);
     if (!payload) return { status: 'empty' };
     try {
-        const trip = payload === SAMPLE_PAYLOAD ? parseTrip(sampleTrip) : decodeTrip(payload);
+        const trip = payload.value === SAMPLE_PAYLOAD ? parseTrip(sampleTrip) : decodeTripPayload(payload);
         return { status: 'ready', trip };
     } catch (error) {
         if (error instanceof TripDataError) return { status: 'error', detail: error.message };
