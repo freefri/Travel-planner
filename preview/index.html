@@ -34,11 +34,15 @@
         </li>
         <li>Encode that JSON as base64url.</li>
         <li>Share <code>https://freefri.github.io/Travel-planner/preview/#data:</code> followed by the encoded text.</li>
+        <li>
+          Or skip the encoding: <code>https://freefri.github.io/Travel-planner/preview/#json:</code> followed by the JSON
+          itself, percent-encoded where the link needs it.
+        </li>
       </ol>
     </section>
   </main>
   <script>
-    if (location.hash.indexOf('#data:') === 0) document.getElementById('trip-guide').hidden = true;
+    if (/^#(data|json):/.test(location.hash)) document.getElementById('trip-guide').hidden = true;
   </script>
   <div id="root"></div>
 </body>
